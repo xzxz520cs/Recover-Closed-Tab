@@ -1,0 +1,29 @@
+{
+    "name": {
+        "message": "Recover Closed Tab"
+    },
+    "description": {
+        "message": "Reopen closed tabs, the extension icon can be customized."
+    },
+    "title": {
+        "message": "Recover Closed Tab"
+    },
+    "option_title": {
+        "message": "Settings"
+    },
+    "ico_settings": {
+        "message": "Custom Icon"
+    },
+    "save": {
+        "message": "Save"
+    },
+    "reset": {
+        "message": "Reset"
+    },
+    "advertising_word": {
+        "message": "🌟 Small Ad: My company specializes in producing high-quality drawstring bags and exquisite bows for textile packaging. If you have ordering needs, feel free to learn more!"
+    },
+    "advertising_link": {
+        "message": "Click here to visit my company's official website"
+    }
+}

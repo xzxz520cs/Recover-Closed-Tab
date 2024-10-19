@@ -1,0 +1,29 @@
+{
+    "name": {
+        "message": "閉じたタブを復元"
+    },
+    "description": {
+        "message": "閉じたタブを再度開きます。拡張機能のアイコンはカスタマイズ可能です。"
+    },
+    "title": {
+        "message": "閉じたタブを復元"
+    },
+    "option_title": {
+        "message": "設定"
+    },
+    "ico_settings": {
+        "message": "カスタムアイコン"
+    },
+    "save": {
+        "message": "保存"
+    },
+    "reset": {
+        "message": "リセット"
+    },
+    "advertising_word": {
+        "message": "🌟 小広告：私の会社は高品質の巾着袋や精巧なリボンなどの繊維包装を専門としています。ご注文のご要望があれば、ぜひ詳細をご覧ください！"
+    },
+    "advertising_link": {
+        "message": "こちらをクリックして私の会社の公式ウェブサイトにアクセスしてください"
+    }
+}
