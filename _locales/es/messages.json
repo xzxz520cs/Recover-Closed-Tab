@@ -1,0 +1,154 @@
+{
+    "name": {
+        "message": "Recuperar pestaña cerrada"
+    },
+    "description": {
+        "message": "🚀 ¡Reabre al instante las pestañas cerradas con un solo clic—sin necesidad de atajos!"
+    },
+    "title": {
+        "message": "Recuperar pestaña cerrada\n\nHaz clic izquierdo para restaurar\nHaz clic derecho para ver el historial"
+    },
+    "title_no_context_menu": {
+        "message": "Recuperar pestaña cerrada\n\nHaz clic izquierdo para restaurar"
+    },
+    "option_title": {
+        "message": "Configuración"
+    },
+    "ico_settings": {
+        "message": "Icono personalizado"
+    },
+    "select_icon_label": {
+        "message": "Selecciona un nuevo archivo de icono:"
+    },
+    "select_icon_tooltip": {
+        "message": "Selecciona tu imagen preferida; después de guardar, reemplazará el icono actual de la extensión."
+    },
+    "restore_icon": {
+        "message": "Usar icono predeterminado"
+    },
+    "restore_icon_tooltip": {
+        "message": "Haz clic en este botón para restaurar el icono de la extensión a su estado predeterminado."
+    },
+    "restore_settings": {
+        "message": "Método de recuperación de pestañas"
+    },
+    "restoreMethodLabel": {
+        "message": "Selecciona el método de recuperación:"
+    },
+    "restore_method_tooltip": {
+        "message": "Elige un método para restaurar las pestañas cerradas. 'Usar función incorporada del navegador' es equivalente a presionar Ctrl+Shift+T; 'Usar el historial registrado por la extensión' se basa en los propios registros de la extensión."
+    },
+    "restoreWithSessions": {
+        "message": "Usar la función incorporada del navegador para restaurar (equivalente al atajo Ctrl+Shift+T)"
+    },
+    "restore_with_sessions_tooltip": {
+        "message": "Utiliza la función de restauración de sesiones del navegador, equivalente a presionar Ctrl+Shift+T. Puede restaurar pestañas y ventanas, y admite navegación hacia adelante y hacia atrás."
+    },
+    "restoreWithOldMethod": {
+        "message": "Usar el historial de navegación registrado por la extensión para restaurar"
+    },
+    "restore_with_old_method_tooltip": {
+        "message": "La extensión registra y restaura las pestañas cerradas por sí misma. Algunos usuarios de larga data pueden preferir este método."
+    },
+    "restoreToEndLabel": {
+        "message": "Restaurar pestañas al extremo derecho"
+    },
+    "restore_to_end_tooltip": {
+        "message": "Cuando se selecciona 'Usar función incorporada del navegador', las pestañas se restauran a sus posiciones originales. Habilitar esta opción moverá las pestañas restauradas al extremo derecho, facilitando su gestión y clic."
+    },
+    "save": {
+        "message": "Guardar"
+    },
+    "save_tooltip": {
+        "message": "Haz clic en este botón para guardar todos los cambios en la configuración."
+    },
+    "clearHistory": {
+        "message": "Borrar historial de la extensión"
+    },
+    "clear_history_tooltip": {
+        "message": "Borra el historial registrado de pestañas cerradas de la extensión; esto no afectará el historial al usar la función de restauración incorporada del navegador."
+    },
+    "reset": {
+        "message": "Restablecer a valores predeterminados"
+    },
+    "reset_tooltip": {
+        "message": "Restablece todas las configuraciones a sus estados predeterminados. Todos los cambios personalizados se perderán. Por favor, confirma antes de continuar."
+    },
+    "advertising_word": {
+        "message": "🌟 Pequeño anuncio: Mi empresa se especializa en producir bolsas de cordón de alta calidad y lazos exquisitos para embalaje textil. ¡Si tienes necesidades de pedido, no dudes en obtener más información!"
+    },
+    "advertising_link": {
+        "message": "Haz clic aquí para visitar el sitio web oficial de mi empresa"
+    },
+    "advertising_link_2": {
+        "message": "El acelerador que estoy usando, código de descuento del 5%: HEROESNEVERDIE"
+    },
+    "cannot_open_file_title": {
+        "message": "No se puede abrir el archivo local directamente"
+    },
+    "click_to_open_file": {
+        "message": "Debido a restricciones de seguridad, la extensión no puede abrir archivos locales directamente. Por favor, haz clic derecho en el siguiente enlace para abrir en una nueva pestaña:"
+    },
+    "security_warning": {
+        "message": "⚠️ Advertencia: Abrir archivos locales puede presentar riesgos de seguridad."
+    },
+    "confirm_file_safe": {
+        "message": "Por favor, asegúrate de que el archivo local es seguro antes de hacer clic."
+    },
+    "invalid_file_url": {
+        "message": "URL de archivo no válido"
+    },
+    "tab_not_saved_message": {
+        "message": "Nota: Cuando cierres esta página, no se guardará en la lista de pestañas cerradas."
+    },
+    "maxClosedTabsLabel": {
+        "message": "Número máximo de pestañas cerradas para almacenar:"
+    },
+    "max_closed_tabs_tooltip": {
+        "message": "Establece el número máximo de pestañas cerradas que la extensión registra; los registros antiguos más allá de este número se eliminarán automáticamente. Establecer en 0 significa que las pestañas cerradas no se registrarán (este método de recuperación no funcionará)."
+    },
+    "clearHistoryOnInitLabel": {
+        "message": "Borrar historial de la extensión al iniciar el navegador"
+    },
+    "clearHistoryOnInit_tooltip": {
+        "message": "Cuando está habilitado, el historial registrado de pestañas cerradas de la extensión se borrará cada vez que se inicie el navegador (solo efectivo para el método de recuperación 'Usar el historial registrado por la extensión')."
+    },
+    "context_menu_settings": {
+        "message": "Configuración del menú contextual"
+    },
+    "enable_context_menu_label": {
+        "message": "Habilitar el menú contextual para mostrar pestañas recientemente cerradas"
+    },
+    "enable_context_menu_tooltip": {
+        "message": "Cuando está habilitado, puedes hacer clic derecho en el icono de la extensión para ver y restaurar pestañas cerradas recientemente directamente desde el menú."
+    },
+    "recently_closed_tabs": {
+        "message": "Lista de pestañas recientemente cerradas"
+    },
+    "maxListItemsLabel": {
+        "message": "Número de elementos a mostrar en la lista de pestañas recientemente cerradas:"
+    },
+    "max_list_items_tooltip": {
+        "message": "Establece el número de pestañas cerradas recientemente que se muestran en el menú contextual, que varía de 1 a 1000 (máximo 25 al usar la función de restauración incorporada del navegador debido a limitaciones del navegador)."
+    },
+    "closed_window": {
+        "message": "Ventana cerrada"
+    },
+    "closed_window_with_count_and_title": {
+        "message": "Ventana cerrada con $count$ pestañas ($title$ etc.)",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            },
+            "title": {
+                "content": "$2"
+            }
+        }
+    },
+    "historyClearedMessage": {
+        "message": "El historial registrado de la extensión ha sido borrado"
+    },
+    "clear_extension_history": {
+        "message": "Borrar historial de la extensión"
+    }
+}

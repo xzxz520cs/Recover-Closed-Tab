@@ -1,0 +1,154 @@
+{
+    "name": {
+        "message": "Récupérer l'onglet fermé"
+    },
+    "description": {
+        "message": "🚀 Rouvrez instantanément les onglets fermés en un clic—pas de raccourcis nécessaires !"
+    },
+    "title": {
+        "message": "Récupérer l'onglet fermé\n\nCliquez gauche pour restaurer\nCliquez droit pour voir l'historique"
+    },
+    "title_no_context_menu": {
+        "message": "Récupérer l'onglet fermé\n\nCliquez gauche pour restaurer"
+    },
+    "option_title": {
+        "message": "Paramètres"
+    },
+    "ico_settings": {
+        "message": "Icône personnalisée"
+    },
+    "select_icon_label": {
+        "message": "Sélectionnez un nouveau fichier d'icône :"
+    },
+    "select_icon_tooltip": {
+        "message": "Sélectionnez votre image préférée ; après avoir enregistré, elle remplacera l'icône actuelle de l'extension."
+    },
+    "restore_icon": {
+        "message": "Utiliser l'icône par défaut"
+    },
+    "restore_icon_tooltip": {
+        "message": "Cliquez sur ce bouton pour restaurer l'icône de l'extension à son état par défaut."
+    },
+    "restore_settings": {
+        "message": "Méthode de récupération des onglets"
+    },
+    "restoreMethodLabel": {
+        "message": "Sélectionnez la méthode de récupération :"
+    },
+    "restore_method_tooltip": {
+        "message": "Choisissez une méthode pour restaurer les onglets fermés. 'Utiliser la fonction intégrée du navigateur' équivaut à appuyer sur Ctrl+Shift+T ; 'Utiliser l'historique enregistré par l'extension' s'appuie sur les propres enregistrements de l'extension."
+    },
+    "restoreWithSessions": {
+        "message": "Utiliser la fonction intégrée du navigateur pour restaurer (équivalent au raccourci Ctrl+Shift+T)"
+    },
+    "restore_with_sessions_tooltip": {
+        "message": "Utilise la fonction de restauration de session intégrée du navigateur, équivalente à appuyer sur Ctrl+Shift+T. Peut restaurer des onglets et des fenêtres, et prend en charge la navigation avant et arrière."
+    },
+    "restoreWithOldMethod": {
+        "message": "Utiliser l'historique de navigation enregistré par l'extension pour restaurer"
+    },
+    "restore_with_old_method_tooltip": {
+        "message": "L'extension enregistre et restaure les onglets fermés par elle-même. Certains utilisateurs de longue date peuvent préférer cette méthode."
+    },
+    "restoreToEndLabel": {
+        "message": "Restaurer les onglets à l'extrême droite"
+    },
+    "restore_to_end_tooltip": {
+        "message": "Lorsque 'Utiliser la fonction intégrée du navigateur' est sélectionné, les onglets sont restaurés à leurs positions d'origine. Activer cette option déplacera les onglets restaurés à l'extrême droite, facilitant leur gestion et leur clic."
+    },
+    "save": {
+        "message": "Enregistrer"
+    },
+    "save_tooltip": {
+        "message": "Cliquez sur ce bouton pour enregistrer tous vos changements de paramètres."
+    },
+    "clearHistory": {
+        "message": "Effacer l'historique de l'extension"
+    },
+    "clear_history_tooltip": {
+        "message": "Efface l'historique enregistré des onglets fermés par l'extension ; cela n'affectera pas l'historique lors de l'utilisation de la fonction de restauration intégrée du navigateur."
+    },
+    "reset": {
+        "message": "Réinitialiser aux paramètres par défaut"
+    },
+    "reset_tooltip": {
+        "message": "Réinitialisez tous les paramètres à leurs états par défaut. Tous les changements personnalisés seront perdus. Veuillez confirmer avant de continuer."
+    },
+    "advertising_word": {
+        "message": "🌟 Petite annonce : Mon entreprise est spécialisée dans la production de sacs à cordon de haute qualité et de nœuds exquis pour l'emballage textile. Si vous avez des besoins de commande, n'hésitez pas à en savoir plus !"
+    },
+    "advertising_link": {
+        "message": "Cliquez ici pour visiter le site officiel de mon entreprise"
+    },
+    "advertising_link_2": {
+        "message": "L'accélérateur que j'utilise, code de réduction de 5 % : HEROESNEVERDIE"
+    },
+    "cannot_open_file_title": {
+        "message": "Impossible d'ouvrir directement le fichier local"
+    },
+    "click_to_open_file": {
+        "message": "En raison des restrictions de sécurité, l'extension ne peut pas ouvrir directement les fichiers locaux. Veuillez cliquer droit sur le lien suivant pour ouvrir dans un nouvel onglet :"
+    },
+    "security_warning": {
+        "message": "⚠️ Avertissement : L'ouverture de fichiers locaux peut présenter des risques de sécurité."
+    },
+    "confirm_file_safe": {
+        "message": "Veuillez vous assurer que le fichier local est sûr avant de cliquer."
+    },
+    "invalid_file_url": {
+        "message": "URL de fichier invalide"
+    },
+    "tab_not_saved_message": {
+        "message": "Remarque : Lorsque vous fermez cette page, elle ne sera pas enregistrée dans la liste des onglets fermés."
+    },
+    "maxClosedTabsLabel": {
+        "message": "Nombre maximum d'onglets fermés à stocker :"
+    },
+    "max_closed_tabs_tooltip": {
+        "message": "Définissez le nombre maximum d'onglets fermés que l'extension enregistre ; les anciens enregistrements au-delà de ce nombre seront automatiquement supprimés. Définir à 0 signifie que les onglets fermés ne seront pas enregistrés (cette méthode de récupération ne fonctionnera pas)."
+    },
+    "clearHistoryOnInitLabel": {
+        "message": "Effacer l'historique de l'extension à chaque démarrage du navigateur"
+    },
+    "clearHistoryOnInit_tooltip": {
+        "message": "Lorsque cette option est activée, l'historique enregistré des onglets fermés par l'extension sera effacé chaque fois que le navigateur démarre (n'est efficace que pour la méthode de récupération 'Utiliser l'historique enregistré par l'extension')."
+    },
+    "context_menu_settings": {
+        "message": "Paramètres du menu contextuel"
+    },
+    "enable_context_menu_label": {
+        "message": "Activer le menu contextuel pour afficher les onglets récemment fermés"
+    },
+    "enable_context_menu_tooltip": {
+        "message": "Lorsque cette option est activée, vous pouvez cliquer droit sur l'icône de l'extension pour voir et restaurer directement les onglets récemment fermés depuis le menu."
+    },
+    "recently_closed_tabs": {
+        "message": "Liste des onglets récemment fermés"
+    },
+    "maxListItemsLabel": {
+        "message": "Nombre d'éléments à afficher dans la liste des onglets récemment fermés :"
+    },
+    "max_list_items_tooltip": {
+        "message": "Définissez le nombre d'onglets récemment fermés affichés dans le menu contextuel, allant de 1 à 1000 (maximum 25 lors de l'utilisation de la fonction de restauration intégrée du navigateur en raison des limitations du navigateur)."
+    },
+    "closed_window": {
+        "message": "Fenêtre fermée"
+    },
+    "closed_window_with_count_and_title": {
+        "message": "Fenêtre fermée avec $count$ onglets ($title$ etc.)",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            },
+            "title": {
+                "content": "$2"
+            }
+        }
+    },
+    "historyClearedMessage": {
+        "message": "L'historique enregistré de l'extension a été effacé"
+    },
+    "clear_extension_history": {
+        "message": "Effacer l'historique de l'extension"
+    }
+}

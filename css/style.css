@@ -1,0 +1,40 @@
+/* 工具提示样式 */
+.form-text.text-muted {
+    font-size: 0.9em;
+}
+
+/* 选项卡内容的顶部间距 */
+.tab-content > .tab-pane {
+    padding-top: 20px;
+}
+
+/* 禁用状态的样式 */
+.disabled {
+    opacity: 0.6;
+}
+
+/* 防止选项卡切换时内容高度变化导致的位移 */
+#optionsTabContent {
+    min-height: 400px; /* 根据内容调整适当的高度 */
+}
+
+/* 调整工具提示的最大宽度 */
+.tooltip-inner {
+    max-width: 300px; /* 适当增加工具提示文本框的宽度 */
+}
+
+#advertising #advertising-content {
+    margin-bottom: 0;
+}
+
+#advertising #advertising-2 {
+    margin-top: 1rem;
+}
+
+.alert-warning p {
+    margin-top: 1rem;
+}
+
+.dependent-options {
+    display: none;
+}

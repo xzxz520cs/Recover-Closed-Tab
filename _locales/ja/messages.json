@@ -3,10 +3,13 @@
         "message": "閉じたタブを復元"
     },
     "description": {
-        "message": "閉じたタブを再度開きます。拡張機能のアイコンはカスタマイズ可能です。"
+        "message": "🚀 ワンクリックで閉じたタブを瞬時に復元—ショートカット不要！"
     },
     "title": {
-        "message": "閉じたタブを復元"
+        "message": "閉じたタブを復元\n\n左クリックで復元\n右クリックで履歴を表示"
+    },
+    "title_no_context_menu": {
+        "message": "閉じたタブを復元\n\n左クリックで復元"
     },
     "option_title": {
         "message": "設定"
@@ -14,16 +17,138 @@
     "ico_settings": {
         "message": "カスタムアイコン"
     },
+    "select_icon_label": {
+        "message": "新しいアイコンファイルを選択："
+    },
+    "select_icon_tooltip": {
+        "message": "お好みの画像を選択してください。保存後、現在の拡張アイコンが置き換えられます。"
+    },
+    "restore_icon": {
+        "message": "デフォルトアイコンを使用"
+    },
+    "restore_icon_tooltip": {
+        "message": "このボタンをクリックすると、拡張アイコンがデフォルトの状態に戻ります。"
+    },
+    "restore_settings": {
+        "message": "タブの復元方法"
+    },
+    "restoreMethodLabel": {
+        "message": "復元方法を選択："
+    },
+    "restore_method_tooltip": {
+        "message": "閉じたタブを復元する方法を選択してください。「ブラウザの内蔵機能を使用」はCtrl+Shift+Tを押すのと同等です。「拡張機能の記録した履歴を使用」は拡張機能自身の記録に依存します。"
+    },
+    "restoreWithSessions": {
+        "message": "ブラウザの内蔵機能を使用して復元（ショートカットキーCtrl+Shift+Tと同等）"
+    },
+    "restore_with_sessions_tooltip": {
+        "message": "ブラウザの内蔵セッション復元機能を使用して、タブとウィンドウを復元します。前に戻ったり進んだりすることができます。"
+    },
+    "restoreWithOldMethod": {
+        "message": "拡張機能が記録した履歴を使用して復元"
+    },
+    "restore_with_old_method_tooltip": {
+        "message": "拡張機能が自ら閉じたタブを記録し、復元します。長期間使用しているユーザーはこの方法を好むかもしれません。"
+    },
+    "restoreToEndLabel": {
+        "message": "タブを最右端に復元"
+    },
+    "restore_to_end_tooltip": {
+        "message": "「ブラウザの内蔵機能を使用」を選択すると、タブは元の位置に復元されます。このオプションを有効にすると、復元されたタブは最右端に移動します。"
+    },
     "save": {
         "message": "保存"
     },
+    "save_tooltip": {
+        "message": "このボタンをクリックして、すべての設定変更を保存します。"
+    },
+    "clearHistory": {
+        "message": "拡張機能の履歴をクリア"
+    },
+    "clear_history_tooltip": {
+        "message": "拡張機能が記録した閉じたタブの履歴をクリアします。ブラウザの内蔵復元機能を使用する場合には影響しません。"
+    },
     "reset": {
-        "message": "リセット"
+        "message": "デフォルト設定にリセット"
+    },
+    "reset_tooltip": {
+        "message": "すべての設定をデフォルトの状態にリセットします。すべてのカスタム変更は失われます。"
     },
     "advertising_word": {
-        "message": "🌟 小広告：私の会社は高品質の巾着袋や精巧なリボンなどの繊維包装を専門としています。ご注文のご要望があれば、ぜひ詳細をご覧ください！"
+        "message": "🌟 広告：私の会社は高品質な巾着袋や精巧なリボンなどの繊維包装を専門としています。ご注文のご要望があれば、ぜひ詳細をご覧ください！"
     },
     "advertising_link": {
         "message": "こちらをクリックして私の会社の公式ウェブサイトにアクセスしてください"
+    },
+    "advertising_link_2": {
+        "message": "私が使用している加速器、95割引コード：HEROESNEVERDIE"
+    },
+    "cannot_open_file_title": {
+        "message": "ローカルファイルを直接開けません"
+    },
+    "click_to_open_file": {
+        "message": "セキュリティ上の制限により、拡張機能はローカルファイルを直接開くことができません。以下のリンクを右クリックして新しいタブで開いてください："
+    },
+    "security_warning": {
+        "message": "⚠️ 警告：ローカルファイルを開くことはセキュリティリスクを伴う可能性があります。"
+    },
+    "confirm_file_safe": {
+        "message": "クリックする前に、ローカルファイルが安全であることを確認してください。"
+    },
+    "invalid_file_url": {
+        "message": "無効なファイルURL"
+    },
+    "tab_not_saved_message": {
+        "message": "注意：このページを閉じても、閉じたタブのリストには保存されません。"
+    },
+    "maxClosedTabsLabel": {
+        "message": "保存する閉じたタブの最大数："
+    },
+    "max_closed_tabs_tooltip": {
+        "message": "拡張機能が記録する閉じたタブの最大数を設定します。古い記録は自動的に削除されます。0に設定すると、閉じたタブは記録されません。"
+    },
+    "clearHistoryOnInitLabel": {
+        "message": "ブラウザ起動時に拡張機能の履歴をクリア"
+    },
+    "clearHistoryOnInit_tooltip": {
+        "message": "このオプションを有効にすると、ブラウザを起動するたびに閉じたタブの履歴がクリアされます。"
+    },
+    "context_menu_settings": {
+        "message": "コンテキストメニューの設定"
+    },
+    "enable_context_menu_label": {
+        "message": "最近閉じたタブを表示するコンテキストメニューを有効にする"
+    },
+    "enable_context_menu_tooltip": {
+        "message": "有効にすると、拡張アイコンを右クリックして最近閉じたタブを直接表示できます。"
+    },
+    "recently_closed_tabs": {
+        "message": "最近閉じたタブのリスト"
+    },
+    "maxListItemsLabel": {
+        "message": "最近閉じたタブのリストに表示する項目数："
+    },
+    "max_list_items_tooltip": {
+        "message": "コンテキストメニューに表示する最近閉じたタブの数を設定します。"
+    },
+    "closed_window": {
+        "message": "閉じたウィンドウ"
+    },
+    "closed_window_with_count_and_title": {
+        "message": "$count$ 個のタブを持つ閉じたウィンドウ（$title$ など）",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            },
+            "title": {
+                "content": "$2"
+            }
+        }
+    },
+    "historyClearedMessage": {
+        "message": "拡張機能が記録した履歴がクリアされました"
+    },
+    "clear_extension_history": {
+        "message": "拡張機能の履歴をクリア"
     }
 }
