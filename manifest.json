@@ -2,7 +2,7 @@
     "update_url": "https://clients2.google.com/service/update2/crx",
     "manifest_version": 3,
     "name": "__MSG_name__",
-    "version": "3.5",
+    "version": "3.6",
     "default_locale": "en",
     "description": "__MSG_description__",
     "icons": {
@@ -30,5 +30,6 @@
         "tabs",
         "storage",
         "contextMenus"
-    ]
+    ],
+    "incognito": "split"
 }

@@ -150,5 +150,11 @@
     },
     "clear_extension_history": {
         "message": "Clear extension history"
+    },
+    "useOldMethodInIncognitoLabel": {
+        "message": "Switch to 'Use extension's recorded history' in Incognito mode"
+    },
+    "useOldMethodInIncognito_tooltip": {
+        "message": "When enabled, clicking the extension in Incognito mode will automatically use the extension's recorded history to restore (since the browser's built-in restore function is unavailable in Incognito mode)."
     }
 }

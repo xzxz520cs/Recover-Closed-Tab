@@ -24,6 +24,7 @@ let pendingCreateContextMenu = false;
 const defaultSettings = {
     restoreMethod: 'sessions',
     restoreToEnd: true,
+    useOldMethodInIncognito: true,
     localsave19: null,
     localsave38: null,
     showAdvertising: true,
@@ -181,7 +182,7 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
                     chrome.contextMenus.removeAll();
                 }
             });
-        } else if ('maxListItems' in changes || 'restoreMethod' in changes) {
+        } else if ('maxListItems' in changes || 'restoreMethod' in changes || 'useOldMethodInIncognito' in changes) {
             // 当其他相关设置变化时，只更新上下文菜单
             chrome.storage.local.get({ enableContextMenu: true }, function (data) {
                 if (data.enableContextMenu) {
@@ -221,66 +222,77 @@ function getMaxClosedTabsCount(callback) {
 }
 
 // 当点击扩展程序图标时，恢复最近关闭的标签页或窗口
-chrome.action.onClicked.addListener(function () {
-    //尝试初始化
+chrome.action.onClicked.addListener(function (tab) {
     initialize();
-    // 获取用户设置
-    chrome.storage.local.get({ 'restoreMethod': 'sessions', 'restoreToEnd': true }, function (result) {
+    chrome.storage.local.get({ 
+        'restoreMethod': 'sessions', 
+        'restoreToEnd': true,
+        'useOldMethodInIncognito': true // 获取新选项
+    }, function (result) {
         let restoreMethod = result.restoreMethod || 'sessions';
         let restoreToEnd = result.restoreToEnd;
+        let useOldMethodInIncognito = result.useOldMethodInIncognito;
 
-        if (restoreMethod === 'sessions') {
-            // 使用 chrome.sessions API 恢复
-            chrome.sessions.getRecentlyClosed({ maxResults: 1 }, function (sessions) {
-                if (sessions.length === 0) return;
-
-                let session = sessions[0];
-                if (session.tab) {
-                    // 恢复标签页
-                    chrome.sessions.restore(session.tab.sessionId, function (restoredSession) {
-                        if (restoreToEnd && restoredSession?.tab?.id) {
-                            // 将标签页移动到末尾并激活
-                            chrome.tabs.move(restoredSession.tab.id, { index: -1 }, function () {
-                                chrome.tabs.update(restoredSession.tab.id, { active: true });
-                            });
-                        }
-                        // 更新上下文菜单
-                        chrome.storage.local.get({ enableContextMenu: true }, function (data) {
-                            if (data.enableContextMenu) {
-                                createContextMenu();
-                            }
-                        });
-                    });
-                } else if (session.window) {
-                    // 恢复窗口
-                    chrome.sessions.restore(session.window.sessionId);
-                }
-            });
-        } else if (restoreMethod === 'old') {
-            // 使用自定义方法恢复
-            let lastClosedTab = closedTabsList.pop();
-            if (!lastClosedTab) return;
-
-            let lastClosedTabUrl = lastClosedTab.url;
-
-            if (lastClosedTabUrl.startsWith('file://')) {
-                // 打开无法直接访问的本地文件页面
-                chrome.tabs.create({
-                    url: chrome.runtime.getURL('unreachable.html') + '?fileUrl=' + encodeURIComponent(lastClosedTabUrl)
-                });
-            } else {
-                // 创建新标签页
-                chrome.tabs.create({ url: lastClosedTabUrl }, function (newTab) {
-                    if (restoreToEnd) {
-                        chrome.tabs.move(newTab.id, { index: -1 }, function () {
-                            chrome.tabs.update(newTab.id, { active: true });
-                        });
-                    }
-                });
+        // 检测是否在无痕模式下
+        chrome.windows.get(tab.windowId, function(window) {
+            if (window.incognito && useOldMethodInIncognito && restoreMethod === 'sessions') {
+                // 如果在无痕模式下，并且启用设置，则切换为 'old' 方法
+                restoreMethod = 'old';
             }
 
-            saveClosedTabsData(); // 保存更新后的已关闭标签页数据
-        }
+            if (restoreMethod === 'sessions') {
+                // 使用 chrome.sessions API 恢复
+                chrome.sessions.getRecentlyClosed({ maxResults: 1 }, function (sessions) {
+                    if (sessions.length === 0) return;
+
+                    let session = sessions[0];
+                    if (session.tab) {
+                        // 恢复标签页
+                        chrome.sessions.restore(session.tab.sessionId, function (restoredSession) {
+                            if (restoreToEnd && restoredSession?.tab?.id) {
+                                // 将标签页移动到末尾并激活
+                                chrome.tabs.move(restoredSession.tab.id, { index: -1 }, function () {
+                                    chrome.tabs.update(restoredSession.tab.id, { active: true });
+                                });
+                            }
+                            // 更新上下文菜单
+                            chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+                                if (data.enableContextMenu) {
+                                    createContextMenu();
+                                }
+                            });
+                        });
+                    } else if (session.window) {
+                        // 恢复窗口
+                        chrome.sessions.restore(session.window.sessionId);
+                    }
+                });
+            } else if (restoreMethod === 'old') {
+                // 使用自定义方法恢复
+                let lastClosedTab = closedTabsList.pop();
+                if (!lastClosedTab) return;
+
+                let lastClosedTabUrl = lastClosedTab.url;
+
+                if (lastClosedTabUrl.startsWith('file://')) {
+                    // 打开无法直接访问的本地文件页面
+                    chrome.tabs.create({
+                        url: chrome.runtime.getURL('unreachable.html') + '?fileUrl=' + encodeURIComponent(lastClosedTabUrl)
+                    });
+                } else {
+                    // 创建新标签页
+                    chrome.tabs.create({ url: lastClosedTabUrl }, function (newTab) {
+                        if (restoreToEnd) {
+                            chrome.tabs.move(newTab.id, { index: -1 }, function () {
+                                chrome.tabs.update(newTab.id, { active: true });
+                            });
+                        }
+                    });
+                }
+
+                saveClosedTabsData(); // 保存更新后的已关闭标签页数据
+            }
+        });
     });
 });
 
@@ -300,55 +312,18 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     }
 });
 
-// 监听上下文菜单点击事件
-chrome.contextMenus.onClicked.addListener(function (info, tab) {
-    if (info.menuItemId.startsWith('sessionTab_')) {
-        let sessionId = info.menuItemId.substring('sessionTab_'.length);
-        chrome.sessions.restore(sessionId, function (restoredSession) {
-            chrome.storage.local.get({ 'restoreToEnd': true }, function (result) {
-                let restoreToEnd = result.restoreToEnd;
-                if (restoreToEnd && restoredSession?.tab?.id) {
-                    chrome.tabs.move(restoredSession.tab.id, { index: -1 }, function () {
-                        chrome.tabs.update(restoredSession.tab.id, { active: true });
-                    });
-                }
-                // 更新上下文菜单
-                chrome.storage.local.get({ enableContextMenu: true }, function (data) {
-                    if (data.enableContextMenu) {
-                        createContextMenu();
-                    }
-                });
-            });
-        });
-    } else if (info.menuItemId.startsWith('closedTab_')) {
-        let index = parseInt(info.menuItemId.split('_')[1]);
-        let tabInfo = closedTabsList[index];
-        reopenClosedTab(tabInfo, index);
-    } else if (info.menuItemId.startsWith('sessionWindow_')) {
-        let sessionId = info.menuItemId.substring('sessionWindow_'.length);
-        chrome.sessions.restore(sessionId, function () {
-            // 恢复窗口后更新上下文菜单
-            chrome.storage.local.get({ enableContextMenu: true }, function (data) {
-                if (data.enableContextMenu) {
-                    createContextMenu();
-                }
-            });
-        });
-    } else if (info.menuItemId === 'clearExtensionHistory') {
-        // 清除扩展中的已关闭标签页历史记录
-        closedTabsList = [];
-        saveClosedTabsData();
-
-        // 更新上下文菜单
-        createContextMenu();
-    }
-});
-
 // 重新打开已关闭的标签页
 function reopenClosedTab(tabInfo, index) {
-    chrome.storage.local.get({ 'restoreMethod': 'old', 'restoreToEnd': true }, function (result) {
+    chrome.storage.local.get({ 'restoreMethod': 'old', 'restoreToEnd': true, 'useOldMethodInIncognito': true }, function (result) {
         let restoreMethod = result.restoreMethod || 'old';
         let restoreToEnd = result.restoreToEnd;
+        let useOldMethodInIncognito = result.useOldMethodInIncognito;
+
+        // 检测无痕模式
+        let isIncognito = chrome.extension.inIncognitoContext;
+        if (isIncognito && useOldMethodInIncognito && restoreMethod === 'sessions') {
+            restoreMethod = 'old';
+        }
 
         if (restoreMethod === 'old') {
             if (tabInfo.url.startsWith('file://')) {
@@ -375,6 +350,8 @@ function reopenClosedTab(tabInfo, index) {
                     createContextMenu();
                 }
             });
+        } else {
+            console.log("无法在无痕模式下使用 'sessions' 方法恢复标签页");
         }
     });
 }
@@ -435,10 +412,23 @@ function createContextMenu() {
     pendingCreateContextMenu = false;
 
     chrome.contextMenus.removeAll(function () {
-        chrome.storage.local.get({ 'restoreMethod': 'sessions', 'maxListItems': 100, 'enableContextMenu': true }, function (result) {
+        chrome.storage.local.get({ 
+            'restoreMethod': 'sessions', 
+            'maxListItems': 100, 
+            'enableContextMenu': true,
+            'useOldMethodInIncognito': true // 获取新选项
+        }, function (result) {
             let restoreMethod = result.restoreMethod || 'sessions';
             let maxListItems = result.maxListItems || 100;
             let enableContextMenu = result.enableContextMenu;
+            let useOldMethodInIncognito = result.useOldMethodInIncognito;
+
+            // 使用 chrome.extension.inIncognitoContext 检测无痕模式
+            let isIncognito = chrome.extension.inIncognitoContext;
+            if (isIncognito && useOldMethodInIncognito && restoreMethod === 'sessions') {
+                // 如果在无痕模式下，并且启用设置，则切换为 'old' 方法
+                restoreMethod = 'old';
+            }
 
             if (enableContextMenu) {
                 // 创建 '最近关闭的标签页' 父菜单项
@@ -525,6 +515,85 @@ function createContextMenu() {
         });
     });
 }
+
+// 监听上下文菜单点击事件
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+    if (info.menuItemId.startsWith('sessionTab_')) {
+        let sessionId = info.menuItemId.substring('sessionTab_'.length);
+
+        chrome.storage.local.get({ 'restoreToEnd': true, 'useOldMethodInIncognito': true }, function (result) {
+            let restoreToEnd = result.restoreToEnd;
+            let useOldMethodInIncognito = result.useOldMethodInIncognito;
+
+            let restoreMethod = 'sessions';
+            // 使用 chrome.extension.inIncognitoContext 检测无痕模式
+            let isIncognito = chrome.extension.inIncognitoContext;
+            if (isIncognito && useOldMethodInIncognito) {
+                restoreMethod = 'old';
+            }
+
+            if (restoreMethod === 'sessions') {
+                chrome.sessions.restore(sessionId, function (restoredSession) {
+
+                    if (restoreToEnd && restoredSession?.tab?.id) {
+                        chrome.tabs.move(restoredSession.tab.id, { index: -1 }, function () {
+                            chrome.tabs.update(restoredSession.tab.id, { active: true });
+                        });
+                    }
+                    // 更新上下文菜单
+                    chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+                        if (data.enableContextMenu) {
+                            createContextMenu();
+                        }
+                    });
+                });
+            } else if (restoreMethod === 'old') {
+                // 使用自定义方法恢复
+                let index = parseInt(info.menuItemId.split('_')[1]);
+                let tabInfo = closedTabsList[index];
+                reopenClosedTab(tabInfo, index);
+            }
+        });
+    } else if (info.menuItemId.startsWith('closedTab_')) {
+        let index = parseInt(info.menuItemId.split('_')[1]);
+        let tabInfo = closedTabsList[index];
+        reopenClosedTab(tabInfo, index);
+    } else if (info.menuItemId.startsWith('sessionWindow_')) {
+        let sessionId = info.menuItemId.substring('sessionWindow_'.length);
+
+        chrome.storage.local.get({ 'useOldMethodInIncognito': true }, function (result) {
+            let useOldMethodInIncognito = result.useOldMethodInIncognito;
+
+            let restoreMethod = 'sessions';
+            // 使用 chrome.extension.inIncognitoContext 检测无痕模式
+            let isIncognito = chrome.extension.inIncognitoContext;
+            if (isIncognito && useOldMethodInIncognito) {
+                restoreMethod = 'old';
+            }
+            if (restoreMethod === 'sessions') {
+                chrome.sessions.restore(sessionId, function () {
+                    // 恢复窗口后更新上下文菜单
+                    chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+                        if (data.enableContextMenu) {
+                            createContextMenu();
+                        }
+                    });
+                });
+            } else if (restoreMethod === 'old') {
+                // 无法恢复窗口，可能需要提示用户
+                console.log("无法在无痕模式下使用 'sessions' 恢复窗口");
+            }
+        });
+    } else if (info.menuItemId === 'clearExtensionHistory') {
+        console.log('Clearing extension history');
+        // 清除扩展中的已关闭标签页历史记录
+        closedTabsList = [];
+        saveClosedTabsData();
+
+        // 更新上下文菜单
+        createContextMenu();
+    }
+});
 
 // 在初始化时比较存储的打开标签页和当前打开的标签页
 function compareTabsAndUpdateClosedList() {

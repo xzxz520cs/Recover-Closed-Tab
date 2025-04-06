@@ -2,6 +2,7 @@
 const defaultSettings = {
     restoreMethod: 'sessions',
     restoreToEnd: true,
+    useOldMethodInIncognito: true,
     localsave19: null,
     localsave38: null,
     showAdvertising: true,
@@ -10,6 +11,7 @@ const defaultSettings = {
     maxListItems: 25,
     clearHistoryOnInit: false
 };
+
 
 // 获取 DOM 元素
 const elems = document.querySelectorAll('[data-i18n]');
@@ -29,6 +31,7 @@ const enableContextMenuCheckbox = document.getElementById('enableContextMenu');
 const advertising2 = document.getElementById('advertising-2');
 const advertisingContainer = document.getElementById('advertising-container');
 const clearHistoryOnInitCheckbox = document.getElementById('clearHistoryOnInit');
+const useOldMethodInIncognitoCheckbox = document.getElementById('useOldMethodInIncognito');
 
 const sessionsOptionsDiv = document.getElementById('sessionsOptions');
 const oldOptionsDiv = document.getElementById('oldOptions');
@@ -131,6 +134,7 @@ function loadSettings() {
         maxClosedTabsInput.value = items.maxClosedTabs;
         enableContextMenuCheckbox.checked = items.enableContextMenu;
         clearHistoryOnInitCheckbox.checked = items.clearHistoryOnInit;  // 设置复选框状态
+        useOldMethodInIncognitoCheckbox.checked = items.useOldMethodInIncognito;
 
         // 显示或隐藏广告
         if (items.showAdvertising) {
@@ -195,6 +199,7 @@ function saveSettings() {
     let settings = {
         restoreMethod: restoreMethod,
         restoreToEnd: restoreToEndCheckbox.checked,
+        useOldMethodInIncognito: useOldMethodInIncognitoCheckbox.checked, // 新增
         maxClosedTabs: Math.min(Math.max(parseInt(maxClosedTabsInput.value) || 1000, 0), 10000),
         maxListItems: maxListItems,
         enableContextMenu: enableContextMenuCheckbox.checked,
@@ -299,6 +304,7 @@ function resetSettings() {
         restoreToEndCheckbox.checked = defaultSettings.restoreToEnd;
         maxClosedTabsInput.value = defaultSettings.maxClosedTabs;
         maxListItemsInput.value = defaultSettings.maxListItems;
+        useOldMethodInIncognitoCheckbox.checked = defaultSettings.useOldMethodInIncognito;
         enableContextMenuCheckbox.checked = defaultSettings.enableContextMenu;
         clearHistoryOnInitCheckbox.checked = defaultSettings.clearHistoryOnInit;
         icoFileInput.value = '';

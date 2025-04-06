@@ -150,5 +150,11 @@
     },
     "clear_extension_history": {
         "message": "清空扩展中的历史记录"
+    },
+    "useOldMethodInIncognitoLabel": {
+        "message": "在无痕模式中改为使用“使用扩展记录的历史记录恢复”"
+    },
+    "useOldMethodInIncognito_tooltip": {
+        "message": "启用此选项后，当您在无痕模式下点击扩展时，将自动使用扩展记录的历史记录进行恢复（因为浏览器内置的恢复功能在无痕模式下不可用）。"
     }
 }

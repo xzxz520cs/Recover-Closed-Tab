@@ -150,5 +150,11 @@
     },
     "clear_extension_history": {
         "message": "Effacer l'historique de l'extension"
+    },
+    "useOldMethodInIncognitoLabel": {
+        "message": "En mode navigation privée, passer à 'Utiliser l'historique enregistré par l'extension'"
+    },
+    "useOldMethodInIncognito_tooltip": {
+        "message": "Lorsque cette option est activée, en cliquant sur l'extension en mode navigation privée, l'historique enregistré par l'extension sera automatiquement utilisé pour la restauration (puisque la fonction de restauration intégrée du navigateur n'est pas disponible en mode navigation privée)."
     }
 }

@@ -150,5 +150,11 @@
     },
     "clear_extension_history": {
         "message": "拡張機能の履歴をクリア"
+    },
+    "useOldMethodInIncognitoLabel": {
+        "message": "シークレットモードで「拡張機能が記録した履歴を使用して復元」に切り替える"
+    },
+    "useOldMethodInIncognito_tooltip": {
+        "message": "このオプションを有効にすると、シークレットモードで拡張機能をクリックしたときに、自動的に拡張機能が記録した履歴を使用して復元します（ブラウザの内蔵復元機能はシークレットモードでは利用できないため）。"
     }
 }

@@ -150,5 +150,11 @@
     },
     "clear_extension_history": {
         "message": "Borrar historial de la extensión"
+    },
+    "useOldMethodInIncognitoLabel": {
+        "message": "En modo incógnito, cambiar a 'Usar el historial registrado por la extensión'"
+    },
+    "useOldMethodInIncognito_tooltip": {
+        "message": "Cuando está habilitado, al hacer clic en la extensión en modo incógnito, se utilizará automáticamente el historial registrado por la extensión para restaurar (ya que la función de restauración incorporada del navegador no está disponible en modo incógnito)."
     }
 }
