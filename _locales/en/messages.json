@@ -156,5 +156,20 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "When enabled, clicking the extension in Incognito mode will automatically use the extension's recorded history to restore (since the browser's built-in restore function is unavailable in Incognito mode)."
+    },
+    "shortcut_activate_2": {
+        "message": "Activate extension (shortcut 2)"
+    },
+    "shortcut_activate_3": {
+        "message": "Activate extension (shortcut 3)"
+    },
+    "shortcut_activate_4": {
+        "message": "Activate extension (shortcut 4)"
+    },
+    "shortcut_activate_5": {
+        "message": "Activate extension (shortcut 5)"
+    },
+    "shortcut_settings": {
+        "message": "Extension shortcut settings"
     }
 }

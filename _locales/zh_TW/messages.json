@@ -1,18 +1,18 @@
 {
     "name": {
-        "message": "恢復關閉的標籤頁"
+        "message": "恢複關閉的標籤頁"
     },
     "description": {
-        "message": "🚀 一鍵恢復您已關閉的標籤頁，無需快捷鍵！"
+        "message": "🚀 一鍵恢複您已關閉的標籤頁，無需快捷鍵！"
     },
     "title": {
-        "message": "恢復已關閉的標籤頁\n\n左鍵點擊即可恢復\n右鍵點擊查看歷史記錄"
+        "message": "恢複已關閉的標籤頁\n\n左鍵點擊即可恢複\n右鍵點擊查看曆史記錄"
     },
     "title_no_context_menu": {
-        "message": "恢復已關閉的標籤頁\n\n左鍵點擊即可恢復"
+        "message": "恢複已關閉的標籤頁\n\n左鍵點擊即可恢複"
     },
     "option_title": {
-        "message": "設定"
+        "message": "設置"
     },
     "ico_settings": {
         "message": "自定義圖標"
@@ -24,58 +24,58 @@
         "message": "選擇您喜歡的圖片，保存後將替換現有的擴展圖標。"
     },
     "restore_icon": {
-        "message": "恢復默認圖標"
+        "message": "恢複默認圖標"
     },
     "restore_icon_tooltip": {
-        "message": "點擊此按鈕，擴展圖標將恢復為默認狀態。"
+        "message": "點擊此按鈕，擴展圖標將恢複爲默認狀態。"
     },
     "restore_settings": {
-        "message": "恢復方式"
+        "message": "恢複方式"
     },
     "restoreMethodLabel": {
-        "message": "請選擇恢復方式："
+        "message": "請選擇恢複方式："
     },
     "restore_method_tooltip": {
-        "message": "選擇一種方式來恢復已關閉的標籤頁。“使用瀏覽器內置功能恢復”相當於按下Ctrl+Shift+T快捷鍵；“使用擴展記錄的歷史記錄恢復”則由擴展自行記錄並恢復。"
+        "message": "選擇一種方式來恢複已關閉的標籤頁。“使用瀏覽器內置功能恢複”相當於按下Ctrl+Shift+T快捷鍵；“使用擴展記錄的曆史記錄恢複”則由擴展自行記錄並恢複。"
     },
     "restoreWithSessions": {
-        "message": "使用瀏覽器內置功能恢復（相當於快捷鍵Ctrl+Shift+T）"
+        "message": "使用瀏覽器內置功能恢複（相當於快捷鍵Ctrl+Shift+T）"
     },
     "restore_with_sessions_tooltip": {
-        "message": "利用瀏覽器內置的會話恢復功能，通過歷史記錄進行恢復，等同於按下Ctrl+Shift+T快捷鍵。可恢復標籤頁和窗口，且支持前進後退。"
+        "message": "利用瀏覽器內置的會話恢複功能，通過曆史記錄進行恢複，等同於按下Ctrl+Shift+T快捷鍵。可恢複標籤頁和窗口，且支持前進後退。"
     },
     "restoreWithOldMethod": {
-        "message": "使用擴展記錄的歷史記錄恢復"
+        "message": "使用擴展記錄的曆史記錄恢複"
     },
     "restore_with_old_method_tooltip": {
-        "message": "由擴展自行記錄和恢復已關閉的標籤頁歷史記錄。在細節上，老用戶可能更習慣這種方式。"
+        "message": "由擴展自行記錄和恢複已關閉的標籤頁曆史記錄。在細節上，老用戶可能更習慣這種方式。"
     },
     "restoreToEndLabel": {
-        "message": "將標籤頁恢復到最右側"
+        "message": "將標籤頁恢複到最右側"
     },
     "restore_to_end_tooltip": {
-        "message": "選擇“使用瀏覽器內置功能恢復”時，標籤頁默認會恢復到關閉的位置。啟用此選項後，恢復的標籤頁將移至所有標籤頁的最右側，方便管理和點擊。"
+        "message": "選擇“使用瀏覽器內置功能恢複”時，標籤頁默認會恢複到關閉的位置。啟用此選項後，恢複的標籤頁將移動至所有標籤頁的最右側，方便管理和點擊。"
     },
     "save": {
         "message": "保存"
     },
     "save_tooltip": {
-        "message": "點擊此按鈕，保存您所做的所有設定更改。"
+        "message": "點擊此按鈕，保存您所做的所有設置更改。"
     },
     "clearHistory": {
-        "message": "清空擴展中的歷史記錄"
+        "message": "清空擴展中的曆史記錄"
     },
     "clear_history_tooltip": {
-        "message": "清除擴展記錄的已關閉標籤頁歷史記錄，不會影響選擇“使用瀏覽器內置功能恢復”時的歷史記錄。"
+        "message": "清除擴展記錄的已關閉標籤頁曆史記錄，不會影響選擇“使用瀏覽器內置功能恢複”時的曆史記錄。"
     },
     "reset": {
-        "message": "恢復默認設置"
+        "message": "恢複默認設置"
     },
     "reset_tooltip": {
-        "message": "將所有設定恢復為默認狀態，所有自定義更改將丟失。請確認後再執行此操作。"
+        "message": "將所有設置恢複爲默認狀態，所有自定義更改將丟失。請確認後再執行此操作。"
     },
     "advertising_word": {
-        "message": "🌟 廣告：我的公司專注於生產高質量的束口袋和精美的蝴蝶結等紡織品包裝。如有訂購需求，歡迎了解更多信息！"
+        "message": "🌟 廣告：我的公司專注於生産高質量的束口袋和精美的蝴蝶結等紡織品包裝。如有訂購需求，歡迎了解更多信息！"
     },
     "advertising_link": {
         "message": "點擊這裡訪問我公司的官網"
@@ -87,7 +87,7 @@
         "message": "無法直接打開本地文件"
     },
     "click_to_open_file": {
-        "message": "由於安全限制，擴展無法直接打開本地文件。請右鍵點擊以下鏈接，在新標籤頁中打開："
+        "message": "由於安全限製，擴展無法直接打開本地文件。請右鍵點擊以下鏈接，在新標籤頁中打開："
     },
     "security_warning": {
         "message": "⚠️ 警告：打開本地文件存在安全風險。"
@@ -99,28 +99,28 @@
         "message": "文件 URL 無效"
     },
     "tab_not_saved_message": {
-        "message": "注意：當您關閉此頁面時，它不會作為已關閉的標籤頁記錄在擴展中。"
+        "message": "注意：當您關閉此頁麵時，它不會作爲已關閉的標籤頁記錄在擴展中。"
     },
     "maxClosedTabsLabel": {
         "message": "已關閉標籤頁的最大記錄數量："
     },
     "max_closed_tabs_tooltip": {
-        "message": "設定擴展記錄的已關閉標籤頁的最大數量，超出數量的舊記錄將被自動刪除。設定為0將不記錄已關閉的標籤頁（即該恢復方式失效）。"
+        "message": "設置擴展記錄的已關閉標籤頁的最大數量，超出數量的舊記錄將被自動刪除。設置爲0將不記錄已關閉的標籤頁（即該恢複方式失效）。"
     },
     "clearHistoryOnInitLabel": {
-        "message": "每次啟動瀏覽器時清空擴展中的歷史記錄"
+        "message": "每次啟動瀏覽器時清空擴展中的曆史記錄"
     },
     "clearHistoryOnInit_tooltip": {
-        "message": "啟用此選項後，每次瀏覽器啟動時，將清空擴展記錄的已關閉標籤頁歷史記錄（僅對恢復方式“使用擴展記錄的歷史記錄恢復”生效）。"
+        "message": "啟用此選項後，每次瀏覽器啟動時，將清空擴展記錄的已關閉標籤頁曆史記錄（僅對恢複方式“使用擴展記錄的曆史記錄恢複”生效）。"
     },
     "context_menu_settings": {
-        "message": "右鍵菜單設定"
+        "message": "右鍵菜單設置"
     },
     "enable_context_menu_label": {
         "message": "啟用右鍵菜單顯示最近關閉的標籤頁"
     },
     "enable_context_menu_tooltip": {
-        "message": "啟用後，您可以通過右鍵點擊擴展圖標，直接在菜單中查看和恢復最近關閉的標籤頁。"
+        "message": "啟用後，您可以通過右鍵點擊擴展圖標，直接在菜單中查看和恢複最近關閉的標籤頁。"
     },
     "recently_closed_tabs": {
         "message": "最近關閉的標籤頁列表"
@@ -129,7 +129,7 @@
         "message": "最近關閉的標籤頁列表顯示數量："
     },
     "max_list_items_tooltip": {
-        "message": "設定右鍵菜單中顯示的最近關閉的標籤頁數量，範圍在1到1000之間（因瀏覽器限制，選擇“使用瀏覽器內置功能恢復”時最大為25條）。"
+        "message": "設置右鍵菜單中顯示的最近關閉的標籤頁數量，範圍在1到1000之間（因瀏覽器限製，選擇“使用瀏覽器內置功能恢複”時最大爲25條）。"
     },
     "closed_window": {
         "message": "已關閉的窗口"
@@ -146,15 +146,30 @@
         }
     },
     "historyClearedMessage": {
-        "message": "擴展中的歷史記錄已清空"
+        "message": "擴展中的曆史記錄已清空"
     },
     "clear_extension_history": {
-        "message": "清空擴展中的歷史記錄"
+        "message": "清空擴展中的曆史記錄"
     },
     "useOldMethodInIncognitoLabel": {
-        "message": "在無痕模式中改為使用「使用擴充套件記錄的歷史記錄恢復」"
+        "message": "在無痕模式中改爲使用“使用擴展記錄的曆史記錄恢複”"
     },
     "useOldMethodInIncognito_tooltip": {
-        "message": "啟用此選項後，當您在無痕模式下點擊擴充套件時，將自動使用擴充套件記錄的歷史記錄進行恢復（因為瀏覽器內建的恢復功能在無痕模式下不可用）。"
+        "message": "啟用此選項後，當您在無痕模式下點擊擴展時，將自動使用擴展記錄的曆史記錄進行恢複（因爲瀏覽器內置的恢複功能在無痕模式下不可用）。"
+    },
+    "shortcut_activate_2": {
+        "message": "激活擴展（快捷鍵2）"
+    },
+    "shortcut_activate_3": {
+        "message": "激活擴展（快捷鍵3）"
+    },
+    "shortcut_activate_4": {
+        "message": "激活擴展（快捷鍵4）"
+    },
+    "shortcut_activate_5": {
+        "message": "激活擴展（快捷鍵5）"
+    },
+    "shortcut_settings": {
+        "message": "擴展快捷鍵設置"
     }
 }

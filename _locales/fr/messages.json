@@ -156,5 +156,20 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "Lorsque cette option est activée, en cliquant sur l'extension en mode navigation privée, l'historique enregistré par l'extension sera automatiquement utilisé pour la restauration (puisque la fonction de restauration intégrée du navigateur n'est pas disponible en mode navigation privée)."
+    },
+    "shortcut_activate_2": {
+        "message": "Activer l'extension (raccourci 2)"
+    },
+    "shortcut_activate_3": {
+        "message": "Activer l'extension (raccourci 3)"
+    },
+    "shortcut_activate_4": {
+        "message": "Activer l'extension (raccourci 4)"
+    },
+    "shortcut_activate_5": {
+        "message": "Activer l'extension (raccourci 5)"
+    },
+    "shortcut_settings": {
+        "message": "Paramètres de raccourcis de l'extension"
     }
 }

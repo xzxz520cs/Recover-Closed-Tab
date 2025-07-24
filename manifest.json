@@ -2,7 +2,21 @@
     "update_url": "https://clients2.google.com/service/update2/crx",
     "manifest_version": 3,
     "name": "__MSG_name__",
-    "version": "3.6",
+    "commands": {
+        "activate_extension_2": {
+            "description": "__MSG_shortcut_activate_2__"
+        },
+        "activate_extension_3": {
+            "description": "__MSG_shortcut_activate_3__"
+        },
+        "activate_extension_4": {
+            "description": "__MSG_shortcut_activate_4__"
+        },
+        "activate_extension_5": {
+            "description": "__MSG_shortcut_activate_5__"
+        }
+    },
+    "version": "3.61",
     "default_locale": "en",
     "description": "__MSG_description__",
     "icons": {

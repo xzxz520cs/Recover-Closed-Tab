@@ -156,5 +156,20 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "启用此选项后，当您在无痕模式下点击扩展时，将自动使用扩展记录的历史记录进行恢复（因为浏览器内置的恢复功能在无痕模式下不可用）。"
+    },
+    "shortcut_activate_2": {
+        "message": "激活扩展（快捷键2）"
+    },
+    "shortcut_activate_3": {
+        "message": "激活扩展（快捷键3）"
+    },
+    "shortcut_activate_4": {
+        "message": "激活扩展（快捷键4）"
+    },
+    "shortcut_activate_5": {
+        "message": "激活扩展（快捷键5）"
+    },
+    "shortcut_settings": {
+        "message": "扩展快捷键设置"
     }
 }

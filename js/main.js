@@ -224,8 +224,8 @@ function getMaxClosedTabsCount(callback) {
 // 当点击扩展程序图标时，恢复最近关闭的标签页或窗口
 chrome.action.onClicked.addListener(function (tab) {
     initialize();
-    chrome.storage.local.get({ 
-        'restoreMethod': 'sessions', 
+    chrome.storage.local.get({
+        'restoreMethod': 'sessions',
         'restoreToEnd': true,
         'useOldMethodInIncognito': true // 获取新选项
     }, function (result) {
@@ -234,7 +234,7 @@ chrome.action.onClicked.addListener(function (tab) {
         let useOldMethodInIncognito = result.useOldMethodInIncognito;
 
         // 检测是否在无痕模式下
-        chrome.windows.get(tab.windowId, function(window) {
+        chrome.windows.get(tab.windowId, function (window) {
             if (window.incognito && useOldMethodInIncognito && restoreMethod === 'sessions') {
                 // 如果在无痕模式下，并且启用设置，则切换为 'old' 方法
                 restoreMethod = 'old';
@@ -294,6 +294,19 @@ chrome.action.onClicked.addListener(function (tab) {
             }
         });
     });
+});
+
+// 添加快捷键命令监听
+chrome.commands.onCommand.addListener(function (command) {
+    if (command.startsWith('activate_extension_')) {
+        // 获取当前活动标签页
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            if (tabs.length > 0) {
+                // 调用与点击事件相同的处理逻辑
+                chrome.action.onClicked.dispatch(tabs[0]);
+            }
+        });
+    }
 });
 
 // 监听标签页创建事件
@@ -412,9 +425,9 @@ function createContextMenu() {
     pendingCreateContextMenu = false;
 
     chrome.contextMenus.removeAll(function () {
-        chrome.storage.local.get({ 
-            'restoreMethod': 'sessions', 
-            'maxListItems': 100, 
+        chrome.storage.local.get({
+            'restoreMethod': 'sessions',
+            'maxListItems': 100,
             'enableContextMenu': true,
             'useOldMethodInIncognito': true // 获取新选项
         }, function (result) {

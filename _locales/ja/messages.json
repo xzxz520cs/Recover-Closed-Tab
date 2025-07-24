@@ -156,5 +156,20 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "このオプションを有効にすると、シークレットモードで拡張機能をクリックしたときに、自動的に拡張機能が記録した履歴を使用して復元します（ブラウザの内蔵復元機能はシークレットモードでは利用できないため）。"
+    },
+    "shortcut_activate_2": {
+        "message": "拡張機能を起動する（ショートカット2）"
+    },
+    "shortcut_activate_3": {
+        "message": "拡張機能を起動する（ショートカット3）"
+    },
+    "shortcut_activate_4": {
+        "message": "拡張機能を起動する（ショートカット4）"
+    },
+    "shortcut_activate_5": {
+        "message": "拡張機能を起動する（ショートカット5）"
+    },
+    "shortcut_settings": {
+        "message": "拡張機能のショートカット設定"
     }
 }

@@ -32,6 +32,7 @@ const advertising2 = document.getElementById('advertising-2');
 const advertisingContainer = document.getElementById('advertising-container');
 const clearHistoryOnInitCheckbox = document.getElementById('clearHistoryOnInit');
 const useOldMethodInIncognitoCheckbox = document.getElementById('useOldMethodInIncognito');
+const shortcutsTabButton = document.getElementById('shortcuts-tab');
 
 const sessionsOptionsDiv = document.getElementById('sessionsOptions');
 const oldOptionsDiv = document.getElementById('oldOptions');
@@ -89,6 +90,13 @@ clearHistoryButton.addEventListener('click', clearBrowsingHistory);
 resetButton.addEventListener('click', resetSettings);
 restoreIconButton.addEventListener('click', restoreDefaultIcon);
 icoFileInput.addEventListener('change', previewIcon);
+
+// 添加快捷键设置按钮点击事件
+if (shortcutsTabButton) {
+    shortcutsTabButton.addEventListener('click', function() {
+        chrome.tabs.create({url: 'chrome://extensions/shortcuts'});
+    });
+}
 
 // 为恢复方法的单选按钮添加事件监听器
 for (let radio of restoreMethodRadios) {

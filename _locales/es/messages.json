@@ -156,5 +156,20 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "Cuando está habilitado, al hacer clic en la extensión en modo incógnito, se utilizará automáticamente el historial registrado por la extensión para restaurar (ya que la función de restauración incorporada del navegador no está disponible en modo incógnito)."
+    },
+    "shortcut_activate_2": {
+        "message": "Activar extensión (atajo 2)"
+    },
+    "shortcut_activate_3": {
+        "message": "Activar extensión (atajo 3)"
+    },
+    "shortcut_activate_4": {
+        "message": "Activar extensión (atajo 4)"
+    },
+    "shortcut_activate_5": {
+        "message": "Activar extensión (atajo 5)"
+    },
+    "shortcut_settings": {
+        "message": "Configuración de atajos de extensión"
     }
 }
