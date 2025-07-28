@@ -3,7 +3,7 @@
         "message": "Récupérer l'onglet fermé"
     },
     "description": {
-        "message": "🚀 Rouvrez instantanément les onglets fermés en un clic—pas de raccourcis nécessaires !"
+        "message": "🚀 Récupérez les onglets récemment fermés en un clic, aucun raccourci nécessaire ! Fonctionne en mode navigation privée. Clic droit pour afficher la liste."
     },
     "title": {
         "message": "Récupérer l'onglet fermé\n\nCliquez gauche pour restaurer\nCliquez droit pour voir l'historique"
