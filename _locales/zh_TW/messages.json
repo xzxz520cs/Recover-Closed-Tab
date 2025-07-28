@@ -171,5 +171,8 @@
     },
     "shortcut_settings": {
         "message": "擴展快捷鍵設置"
+    },
+    "shortcut_settings_tooltip": {
+        "message": "在此頁面您可以設定擴充功能的快捷鍵。如果您未發現設定項，請向下捲動尋找。"
     }
 }

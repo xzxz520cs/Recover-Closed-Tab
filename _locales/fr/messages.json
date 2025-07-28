@@ -171,5 +171,8 @@
     },
     "shortcut_settings": {
         "message": "Paramètres de raccourcis de l'extension"
+    },
+    "shortcut_settings_tooltip": {
+        "message": "Sur cette page, vous pouvez configurer les raccourcis de l'extension. Si vous ne voyez pas les paramètres, veuillez faire défiler vers le bas pour les trouver."
     }
 }

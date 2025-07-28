@@ -171,5 +171,8 @@
     },
     "shortcut_settings": {
         "message": "Extension shortcut settings"
+    },
+    "shortcut_settings_tooltip": {
+        "message": "On this page you can set extension shortcuts. If you don't see the settings, please scroll down to find them."
     }
 }

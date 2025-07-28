@@ -171,5 +171,8 @@
     },
     "shortcut_settings": {
         "message": "拡張機能のショートカット設定"
+    },
+    "shortcut_settings_tooltip": {
+        "message": "このページで拡張機能のショートカットキーを設定できます。設定項目が見つからない場合は、下にスクロールしてください。"
     }
 }

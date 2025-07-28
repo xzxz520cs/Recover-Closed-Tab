@@ -171,5 +171,8 @@
     },
     "shortcut_settings": {
         "message": "扩展快捷键设置"
+    },
+    "shortcut_settings_tooltip": {
+        "message": "在此页面您可以设置扩展程序的快捷键。如果您未发现设置项，请向下滚动寻找。"
     }
 }

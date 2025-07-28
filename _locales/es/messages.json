@@ -171,5 +171,8 @@
     },
     "shortcut_settings": {
         "message": "Configuración de atajos de extensión"
+    },
+    "shortcut_settings_tooltip": {
+        "message": "En esta página puede configurar los atajos de la extensión. Si no ve la configuración, desplácese hacia abajo para encontrarla."
     }
 }
