@@ -3,7 +3,7 @@
         "message": "Recuperar pestaña cerrada"
     },
     "description": {
-        "message": "🚀 Recupera pestañas cerradas recientemente con un clic, ¡sin atajos necesarios! Funciona en modo incógnito. Haz clic derecho para mostrar la lista."
+        "message": "🚀 Recupera pestañas cerradas recientemente con un clic, ¡sin múltiples clics o atajos necesarios! Funciona en modo incógnito. Haz clic derecho en el icono de la extensión para mostrar la lista de historial."
     },
     "title": {
         "message": "Recuperar pestaña cerrada\n\nHaz clic izquierdo para restaurar\nHaz clic derecho para ver el historial"
