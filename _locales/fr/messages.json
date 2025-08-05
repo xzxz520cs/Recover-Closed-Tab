@@ -3,7 +3,7 @@
         "message": "Récupérer l'onglet fermé"
     },
     "description": {
-        "message": "🚀 Récupérez les onglets récemment fermés en un clic, sans clics multiples ou raccourcis nécessaires ! Fonctionne en mode navigation privée. Clic droit sur l'icône de l'extension pour afficher la liste d'historique."
+        "message": "🚀 Récupérez les onglets fermés en un clic ! Fonctionne en mode navigation privée. Clic droit sur l'icône pour l'historique."
     },
     "title": {
         "message": "Récupérer l'onglet fermé\n\nCliquez gauche pour restaurer\nCliquez droit pour voir l'historique"

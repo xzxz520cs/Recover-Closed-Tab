@@ -3,7 +3,7 @@
         "message": "Recover Closed Tab"
     },
     "description": {
-        "message": "🚀 Recover recently closed tabs with one click, no multiple clicks or shortcuts needed! Works in incognito mode. Right-click the extension icon to show history list."
+        "message": "🚀 Recover recently closed tabs with one click! Works in incognito mode. Right-click the icon to show history."
     },
     "title": {
         "message": "Recover Closed Tab\n\nLeft-click to restore\nRight-click to view history"
