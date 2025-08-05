@@ -132,10 +132,15 @@ function loadSettings() {
         // 检测用户的语言环境
         const locale = chrome.i18n.getUILanguage() || chrome.i18n.getMessage("@@ui_locale");
 
-        // 如果是 zh-CN 或 zh_CN，显示 ad-link-2 元素
+        // 如果是 zh-CN 或 zh_CN，显示第二个广告，隐藏主要广告内容
         if (locale === "zh-CN" || locale === "zh_CN") {
             if (advertising2) {
                 advertising2.style.display = "block";
+            }
+            // 获取广告内容元素并隐藏
+            const advertisingContent = document.getElementById('advertising-content');
+            if (advertisingContent) {
+                advertisingContent.style.display = "none";
             }
         }
 
