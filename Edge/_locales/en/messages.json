@@ -1,0 +1,178 @@
+{
+    "name": {
+        "message": "Recover Closed Tab"
+    },
+    "description": {
+        "message": "🚀 Recover recently closed tabs with one click! Works in incognito mode. Right-click the icon to show history."
+    },
+    "title": {
+        "message": "Recover Closed Tab\n\nLeft-click to restore\nRight-click to view history"
+    },
+    "title_no_context_menu": {
+        "message": "Recover Closed Tab\n\nLeft-click to restore"
+    },
+    "option_title": {
+        "message": "Settings"
+    },
+    "ico_settings": {
+        "message": "Custom Icon"
+    },
+    "select_icon_label": {
+        "message": "Select a new icon file:"
+    },
+    "select_icon_tooltip": {
+        "message": "Select your preferred image; after saving, it will replace the current extension icon."
+    },
+    "restore_icon": {
+        "message": "Use default icon"
+    },
+    "restore_icon_tooltip": {
+        "message": "Click this button to restore the extension icon to its default state."
+    },
+    "restore_settings": {
+        "message": "Tab Recovery Method"
+    },
+    "restoreMethodLabel": {
+        "message": "Select recovery method:"
+    },
+    "restore_method_tooltip": {
+        "message": "Choose a method to restore closed tabs. 'Use browser's built-in function' is equivalent to pressing Ctrl+Shift+T; 'Use extension's recorded history' relies on the extension's own records."
+    },
+    "restoreWithSessions": {
+        "message": "Use browser's built-in function to restore (equivalent to shortcut Ctrl+Shift+T)"
+    },
+    "restore_with_sessions_tooltip": {
+        "message": "Uses the browser's built-in session restore function, equivalent to pressing Ctrl+Shift+T. Can restore tabs and windows, and supports back and forward navigation."
+    },
+    "restoreWithOldMethod": {
+        "message": "Use browsing history recorded by the extension to restore"
+    },
+    "restore_with_old_method_tooltip": {
+        "message": "The extension records and restores closed tabs on its own. Some long-time users may prefer this method."
+    },
+    "restoreToEndLabel": {
+        "message": "Restore tabs to the far right"
+    },
+    "restore_to_end_tooltip": {
+        "message": "When 'Use browser's built-in function' is selected, tabs are restored to their original positions. Enabling this option will move restored tabs to the far right, making them easier to manage and click."
+    },
+    "save": {
+        "message": "Save"
+    },
+    "save_tooltip": {
+        "message": "Click this button to save all your settings changes."
+    },
+    "clearHistory": {
+        "message": "Clear extension history"
+    },
+    "clear_history_tooltip": {
+        "message": "Clear the extension's recorded history of closed tabs; this will not affect the history when using the browser's built-in restore function."
+    },
+    "reset": {
+        "message": "Reset to default settings"
+    },
+    "reset_tooltip": {
+        "message": "Reset all settings to their default states. All custom changes will be lost. Please confirm before proceeding."
+    },
+    "advertising_word": {
+        "message": "🌟 Ad: My company specializes in producing high-quality drawstring bags and exquisite bows for textile packaging. If you have ordering needs, feel free to learn more!"
+    },
+    "advertising_link": {
+        "message": "Click here to visit my company's official website"
+    },
+    "advertising_link_2": {
+        "message": "The accelerator I'm using, 5% off discount code: HEROESNEVERDIE"
+    },
+    "cannot_open_file_title": {
+        "message": "Cannot Open Local File Directly"
+    },
+    "click_to_open_file": {
+        "message": "Due to security restrictions, the extension cannot directly open local files. Please right-click the following link to open in a new tab:"
+    },
+    "security_warning": {
+        "message": "⚠️ Warning: Opening local files can pose security risks."
+    },
+    "confirm_file_safe": {
+        "message": "Please ensure the local file is safe before clicking."
+    },
+    "invalid_file_url": {
+        "message": "Invalid file URL"
+    },
+    "tab_not_saved_message": {
+        "message": "Note: When you close this page, it will not be saved to the list of closed tabs."
+    },
+    "maxClosedTabsLabel": {
+        "message": "Maximum number of closed tabs to store:"
+    },
+    "max_closed_tabs_tooltip": {
+        "message": "Set the maximum number of closed tabs the extension records; older records beyond this number will be automatically deleted. Setting to 0 means closed tabs won't be recorded (this recovery method will not work)."
+    },
+    "clearHistoryOnInitLabel": {
+        "message": "Clear extension history on each browser startup"
+    },
+    "clearHistoryOnInit_tooltip": {
+        "message": "When enabled, the extension's recorded history of closed tabs will be cleared each time the browser starts (only effective for 'Use extension's recorded history' recovery method)."
+    },
+    "context_menu_settings": {
+        "message": "Context Menu Settings"
+    },
+    "enable_context_menu_label": {
+        "message": "Enable context menu to show recently closed tabs"
+    },
+    "enable_context_menu_tooltip": {
+        "message": "When enabled, you can right-click the extension icon to view and restore recently closed tabs directly from the menu."
+    },
+    "recently_closed_tabs": {
+        "message": "Recently Closed Tabs List"
+    },
+    "maxListItemsLabel": {
+        "message": "Number of items to display in the recently closed tabs list:"
+    },
+    "max_list_items_tooltip": {
+        "message": "Set the number of recently closed tabs displayed in the context menu, ranging from 1 to 1000 (maximum 25 when using the browser's built-in restore function due to browser limitations)."
+    },
+    "closed_window": {
+        "message": "Closed window"
+    },
+    "closed_window_with_count_and_title": {
+        "message": "Closed window with $count$ tabs ($title$ etc.)",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            },
+            "title": {
+                "content": "$2"
+            }
+        }
+    },
+    "historyClearedMessage": {
+        "message": "Extension's recorded history has been cleared"
+    },
+    "clear_extension_history": {
+        "message": "Clear extension history"
+    },
+    "useOldMethodInIncognitoLabel": {
+        "message": "Switch to 'Use extension's recorded history' in Incognito mode"
+    },
+    "useOldMethodInIncognito_tooltip": {
+        "message": "When enabled, clicking the extension in Incognito mode will automatically use the extension's recorded history to restore (since the browser's built-in restore function is unavailable in Incognito mode)."
+    },
+    "shortcut_activate_2": {
+        "message": "Activate extension (shortcut 2)"
+    },
+    "shortcut_activate_3": {
+        "message": "Activate extension (shortcut 3)"
+    },
+    "shortcut_activate_4": {
+        "message": "Activate extension (shortcut 4)"
+    },
+    "shortcut_activate_5": {
+        "message": "Activate extension (shortcut 5)"
+    },
+    "shortcut_settings": {
+        "message": "Extension shortcut settings"
+    },
+    "shortcut_settings_tooltip": {
+        "message": "On this page you can set extension shortcuts. If you don't see the settings, please scroll down to find them."
+    }
+}
