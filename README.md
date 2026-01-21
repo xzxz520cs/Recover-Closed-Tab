@@ -45,5 +45,5 @@
 ## 技术支持
 
 如有问题或建议，请通过以下方式联系：
-- 邮箱: example@example.com
+- 邮箱: ttfdg520cs@gmail.com
 - GitHub: 提交Issue
