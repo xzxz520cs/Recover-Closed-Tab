@@ -3,7 +3,7 @@
         "message": "Recover Closed Tab"
     },
     "description": {
-        "message": "Recover recently closed tabs with one click! Works in incognito mode. Right-click the icon to show history."
+        "message": "🚀 Recover recently closed tabs with one click! Works in incognito mode. Right-click the icon or anywhere on a webpage to show history."
     },
     "title": {
         "message": "Recover Closed Tab\n\nLeft-click to restore\nRight-click to view history"
@@ -120,7 +120,7 @@
         "message": "Enable context menu to show recently closed tabs"
     },
     "enable_context_menu_tooltip": {
-        "message": "When enabled, you can right-click the extension icon to view and restore recently closed tabs directly from the menu."
+        "message": "When enabled, you can right-click the extension icon or anywhere on a webpage to view and restore recently closed tabs directly from the menu."
     },
     "recently_closed_tabs": {
         "message": "Recently Closed Tabs List"

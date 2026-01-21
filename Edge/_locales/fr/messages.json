@@ -3,7 +3,7 @@
         "message": "Récupérer l'onglet fermé"
     },
     "description": {
-        "message": "Récupérez les onglets fermés en un clic ! Fonctionne en mode navigation privée. Clic droit sur l'icône pour l'historique."
+        "message": "🚀 Récupérez les onglets fermés en un clic ! Fonctionne en mode navigation privée. Clic droit sur l'icône ou n'importe où sur une page web pour l'historique."
     },
     "title": {
         "message": "Récupérer l'onglet fermé\n\nCliquez gauche pour restaurer\nCliquez droit pour voir l'historique"
@@ -120,7 +120,7 @@
         "message": "Activer le menu contextuel pour afficher les onglets récemment fermés"
     },
     "enable_context_menu_tooltip": {
-        "message": "Lorsque cette option est activée, vous pouvez cliquer droit sur l'icône de l'extension pour voir et restaurer directement les onglets récemment fermés depuis le menu."
+        "message": "Lorsque cette option est activée, vous pouvez cliquer droit sur l'icône de l'extension ou n'importe où sur une page web pour voir et restaurer directement les onglets récemment fermés depuis le menu."
     },
     "recently_closed_tabs": {
         "message": "Liste des onglets récemment fermés"

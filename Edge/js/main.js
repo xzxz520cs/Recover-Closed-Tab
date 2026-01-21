@@ -448,7 +448,7 @@ function createContextMenu() {
                 chrome.contextMenus.create({
                     id: 'recentlyClosedTabs',
                     title: chrome.i18n.getMessage('recently_closed_tabs'),
-                    contexts: ['action']
+                    contexts: ['action', 'page']
                 });
 
                 // 如果 restoreMethod 是 'old'，则添加 '清除扩展中的历史记录' 功能
@@ -456,7 +456,7 @@ function createContextMenu() {
                     chrome.contextMenus.create({
                         id: 'clearExtensionHistory',
                         title: chrome.i18n.getMessage('clear_extension_history'),
-                        contexts: ['action']
+                        contexts: ['action', 'page']
                     });
                 }
 
@@ -472,7 +472,7 @@ function createContextMenu() {
                                     id: 'sessionTab_' + sessionId,
                                     parentId: 'recentlyClosedTabs',
                                     title: title,
-                                    contexts: ['action']
+                                    contexts: ['action', 'page']
                                 });
                             } else if (session.window) {
                                 let windowSessionId = session.window.sessionId;
@@ -485,7 +485,7 @@ function createContextMenu() {
                                     id: 'sessionWindow_' + windowSessionId,
                                     parentId: 'recentlyClosedTabs',
                                     title: title,
-                                    contexts: ['action']
+                                    contexts: ['action', 'page']
                                 });
                             }
                         });
@@ -505,7 +505,7 @@ function createContextMenu() {
                             id: 'closedTab_' + i,
                             parentId: 'recentlyClosedTabs',
                             title: title,
-                            contexts: ['action']
+                            contexts: ['action', 'page']
                         });
                     }
 
