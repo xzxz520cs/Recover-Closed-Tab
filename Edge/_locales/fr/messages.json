@@ -3,7 +3,7 @@
         "message": "Récupérer l'onglet fermé"
     },
     "description": {
-        "message": "Récupérez les onglets fermés en un clic ! Fonctionne en mode privé. Clic droit sur l'icône ou page pour l'historique."
+        "message": "🚀 Récupérez les onglets fermés en un clic ! Fonctionne en mode privé. Clic droit sur l'icône ou page pour l'historique."
     },
     "title": {
         "message": "Récupérer l'onglet fermé\n\nCliquez gauche pour restaurer\nCliquez droit pour voir l'historique"
@@ -28,6 +28,18 @@
     },
     "restore_icon_tooltip": {
         "message": "Cliquez sur ce bouton pour restaurer l'icône de l'extension à son état par défaut."
+    },
+    "icon_color_label": {
+        "message": "Couleur d'icône personnalisée"
+    },
+    "icon_color_tooltip": {
+        "message": "Choisissez une couleur pour teinter l'icône. Pour les images importées, seuls les pixels non transparents sont recolorés (la forme est conservée)."
+    },
+    "preset_icon_label": {
+        "message": "Icônes prédéfinies :"
+    },
+    "preset_icon_tooltip": {
+        "message": "Choisissez une icône intégrée et elle sera utilisée avec la couleur sélectionnée ci-dessus."
     },
     "restore_settings": {
         "message": "Méthode de récupération des onglets"
@@ -131,6 +143,24 @@
     "max_list_items_tooltip": {
         "message": "Définissez le nombre d'onglets récemment fermés affichés dans le menu contextuel, allant de 1 à 1000 (maximum 25 lors de l'utilisation de la fonction de restauration intégrée du navigateur en raison des limitations du navigateur)."
     },
+    "menu_show_time_label": {
+        "message": "Afficher l'heure de fermeture dans le menu contextuel"
+    },
+    "menu_show_time_tooltip": {
+        "message": "Lorsque cette option est activée, l'heure de fermeture de chaque onglet est affichée dans le menu contextuel."
+    },
+    "menu_time_position_label": {
+        "message": "Position de l'heure de fermeture :"
+    },
+    "menu_time_position_tooltip": {
+        "message": "Choisissez si l'heure de fermeture apparaît à gauche ou à droite du titre de l'onglet dans le menu contextuel."
+    },
+    "menu_time_position_left": {
+        "message": "Afficher à gauche"
+    },
+    "menu_time_position_right": {
+        "message": "Afficher à droite"
+    },
     "closed_window": {
         "message": "Fenêtre fermée"
     },
@@ -156,6 +186,95 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "Lorsque cette option est activée, en cliquant sur l'extension en mode navigation privée, l'historique enregistré par l'extension sera automatiquement utilisé pour la restauration (puisque la fonction de restauration intégrée du navigateur n'est pas disponible en mode navigation privée)."
+    },
+    "menu_seconds_ago": {
+        "message": "Il y a $count$ seconde(s)",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_minutes_ago": {
+        "message": "Il y a $count$ minute(s)",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_hours_ago": {
+        "message": "Il y a $count$ heure(s)",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_days_ago": {
+        "message": "Il y a $count$ jour(s)",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_months_ago": {
+        "message": "Il y a $count$ mois",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_years_ago": {
+        "message": "Il y a $count$ an(s)",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_two_units_minutes_seconds": {
+        "message": "$minutes$ min $seconds$ s il y a",
+        "placeholders": {
+            "minutes": { "content": "$1" },
+            "seconds": { "content": "$2" }
+        }
+    },
+    "menu_two_units_hours_minutes": {
+        "message": "$hours$ h $minutes$ min il y a",
+        "placeholders": {
+            "hours": { "content": "$1" },
+            "minutes": { "content": "$2" }
+        }
+    },
+    "menu_two_units_days_hours": {
+        "message": "$days$ j $hours$ h il y a",
+        "placeholders": {
+            "days": { "content": "$1" },
+            "hours": { "content": "$2" }
+        }
+    },
+    "menu_two_units_months_days": {
+        "message": "$months$ mois $days$ j il y a",
+        "placeholders": {
+            "months": { "content": "$1" },
+            "days": { "content": "$2" }
+        }
+    },
+    "menu_two_units_years_months": {
+        "message": "$years$ an $months$ mois il y a",
+        "placeholders": {
+            "years": { "content": "$1" },
+            "months": { "content": "$2" }
+        }
+    },
+    "menu_two_units_label": {
+        "message": "Afficher l'heure de fermeture avec deux unités"
+    },
+    "menu_two_units_tooltip": {
+        "message": "Lorsqu'il est activé, l'heure de fermeture est affichée avec deux unités (p. ex., '3 min 5 s il y a', '1 h 2 min il y a') ; désactivé, seule la plus grande unité est affichée (p. ex., 'il y a 3 minutes')."
     },
     "shortcut_activate_2": {
         "message": "Activer l'extension (raccourci 2)"

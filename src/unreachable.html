@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title data-i18n="cannot_open_file_title"></title>
+    <!-- 引入Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container my-4">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title" data-i18n="cannot_open_file_title"></h1>
+                <div class="alert alert-warning" role="alert">
+                    <p data-i18n="security_warning"></p>
+                    <p data-i18n="confirm_file_safe"></p>
+                </div>
+                <p data-i18n="click_to_open_file"></p>
+                <p>
+                    <a id="fileLink" href="#" target="_blank" class="btn btn-primary"></a>
+                </p>
+                <p class="text-muted" data-i18n="tab_not_saved_message"></p>
+            </div>
+        </div>
+    </div>
+    <script src="js/unreachable.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Python 构建产物缓存
+__pycache__/
+*.pyc
+
+# 构建产物目录（由 build.py 生成）
+# 注意：如果你希望把 Chrome/ 和 Edge/ 产物也提交到仓库，请删除下面两行
+/dist/
+
+# 发布凭据（含密钥，绝不要提交）
+publish_config.json
+.chrome_token.json
+
+# 商店详情文案（本地私密文档，不入库）
+STORE_LISTING.md
+
+# 系统文件
+Thumbs.db
+.DS_Store

@@ -3,7 +3,7 @@
         "message": "Recuperar pestaña cerrada"
     },
     "description": {
-        "message": "Recupera pestañas cerradas con un clic. Funciona en modo incógnito. Clic derecho en icono o página para historial."
+        "message": "🚀 Recupera pestañas cerradas con un clic. Funciona en modo incógnito. Clic derecho en icono o página para historial."
     },
     "title": {
         "message": "Recuperar pestaña cerrada\n\nHaz clic izquierdo para restaurar\nHaz clic derecho para ver el historial"
@@ -28,6 +28,18 @@
     },
     "restore_icon_tooltip": {
         "message": "Haz clic en este botón para restaurar el icono de la extensión a su estado predeterminado."
+    },
+    "icon_color_label": {
+        "message": "Color de icono personalizado"
+    },
+    "icon_color_tooltip": {
+        "message": "Elige un color para teñir el icono. Para las imágenes subidas, solo se recolorean los píxeles no transparentes (se conserva la forma)."
+    },
+    "preset_icon_label": {
+        "message": "Iconos predefinidos:"
+    },
+    "preset_icon_tooltip": {
+        "message": "Elige un icono integrado y se usará con el color seleccionado arriba."
     },
     "restore_settings": {
         "message": "Método de recuperación de pestañas"
@@ -131,6 +143,24 @@
     "max_list_items_tooltip": {
         "message": "Establece el número de pestañas cerradas recientemente que se muestran en el menú contextual, que varía de 1 a 1000 (máximo 25 al usar la función de restauración incorporada del navegador debido a limitaciones del navegador)."
     },
+    "menu_show_time_label": {
+        "message": "Mostrar la hora de cierre en el menú contextual"
+    },
+    "menu_show_time_tooltip": {
+        "message": "Cuando está habilitado, se muestra la hora en que se cerró cada pestaña en el menú contextual."
+    },
+    "menu_time_position_label": {
+        "message": "Posición de la hora de cierre:"
+    },
+    "menu_time_position_tooltip": {
+        "message": "Elija si la hora de cierre aparece a la izquierda o a la derecha del título de la pestaña en el menú contextual."
+    },
+    "menu_time_position_left": {
+        "message": "Mostrar a la izquierda"
+    },
+    "menu_time_position_right": {
+        "message": "Mostrar a la derecha"
+    },
     "closed_window": {
         "message": "Ventana cerrada"
     },
@@ -156,6 +186,95 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "Cuando está habilitado, al hacer clic en la extensión en modo incógnito, se utilizará automáticamente el historial registrado por la extensión para restaurar (ya que la función de restauración incorporada del navegador no está disponible en modo incógnito)."
+    },
+    "menu_seconds_ago": {
+        "message": "Hace $count$ segundos",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_minutes_ago": {
+        "message": "Hace $count$ minutos",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_hours_ago": {
+        "message": "Hace $count$ horas",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_days_ago": {
+        "message": "Hace $count$ días",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_months_ago": {
+        "message": "Hace $count$ meses",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_years_ago": {
+        "message": "Hace $count$ años",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_two_units_minutes_seconds": {
+        "message": "$minutes$ min $seconds$ seg hace",
+        "placeholders": {
+            "minutes": { "content": "$1" },
+            "seconds": { "content": "$2" }
+        }
+    },
+    "menu_two_units_hours_minutes": {
+        "message": "$hours$ h $minutes$ min hace",
+        "placeholders": {
+            "hours": { "content": "$1" },
+            "minutes": { "content": "$2" }
+        }
+    },
+    "menu_two_units_days_hours": {
+        "message": "$days$ d $hours$ h hace",
+        "placeholders": {
+            "days": { "content": "$1" },
+            "hours": { "content": "$2" }
+        }
+    },
+    "menu_two_units_months_days": {
+        "message": "$months$ m $days$ d hace",
+        "placeholders": {
+            "months": { "content": "$1" },
+            "days": { "content": "$2" }
+        }
+    },
+    "menu_two_units_years_months": {
+        "message": "$years$ a $months$ m hace",
+        "placeholders": {
+            "years": { "content": "$1" },
+            "months": { "content": "$2" }
+        }
+    },
+    "menu_two_units_label": {
+        "message": "Mostrar la hora de cierre con dos unidades"
+    },
+    "menu_two_units_tooltip": {
+        "message": "Cuando está habilitado, la hora de cierre se muestra con dos unidades (p. ej., '3 min 5 seg hace', '1 h 2 min hace'); deshabilitado, solo se muestra la unidad más grande (p. ej., 'hace 3 minutos')."
     },
     "shortcut_activate_2": {
         "message": "Activar extensión (atajo 2)"

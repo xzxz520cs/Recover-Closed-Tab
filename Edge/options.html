@@ -37,7 +37,22 @@
                             <canvas id="icon-preview-canvas" width="19" height="19" class="ms-3 border"></canvas>
                         </div>
                     </div>
-                    <button type="button" id="restore-icon" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n="restore_icon" data-i18n-tooltip="restore_icon_tooltip"></button>
+                    <!-- 自定义颜色 -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="iconColorEnabled">
+                            <label class="form-check-label" for="iconColorEnabled" data-i18n="icon_color_label" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="icon_color_tooltip"></label>
+                        </div>
+                        <input type="color" id="iconColor" class="form-control form-control-color" value="#adadad" style="width:60px">
+                    </div>
+                    <!-- 预设图标选择 -->
+                    <div class="mb-3">
+                        <label class="form-label" data-i18n="preset_icon_label" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="preset_icon_tooltip"></label>
+                        <div class="d-flex flex-wrap gap-2" id="preset-icon-list">
+                            <!-- 预设图标按钮由 options.js 动态生成 -->
+                        </div>
+                    </div>
+                    <button type="button" id="restore-icon" class="btn btn-outline-dark" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n="restore_icon" data-i18n-tooltip="restore_icon_tooltip"></button>
                 </form>
             </div>
             <!-- 恢复设置选项卡 -->
@@ -94,6 +109,30 @@
                         <label for="maxListItems" class="form-label" data-i18n="maxListItemsLabel" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="max_list_items_tooltip"></label>
                         <input type="number" id="maxListItems" min="1" max="1000" value="100" class="form-control">
                     </div>
+                    <!-- 时间显示设置 -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="menuShowTime">
+                            <label class="form-check-label" for="menuShowTime" data-i18n="menu_show_time_label" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="menu_show_time_tooltip"></label>
+                        </div>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" id="menuTimeTwoUnits">
+                            <label class="form-check-label" for="menuTimeTwoUnits" data-i18n="menu_two_units_label" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="menu_two_units_tooltip"></label>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="menuTimePositionGroup">
+                        <label class="form-label" data-i18n="menu_time_position_label" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="menu_time_position_tooltip"></label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="menuTimePositionLeft" name="menuTimePosition" value="left">
+                                <label class="form-check-label" for="menuTimePositionLeft" data-i18n="menu_time_position_left"></label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="menuTimePositionRight" name="menuTimePosition" value="right">
+                                <label class="form-check-label" for="menuTimePositionRight" data-i18n="menu_time_position_right"></label>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -101,7 +140,7 @@
         <div class="d-flex justify-content-end mt-4">
             <button type="button" id="save" class="btn btn-success me-2" data-i18n="save" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="save_tooltip"></button>
             <button type="button" id="clearHistory" class="btn btn-warning me-2" data-i18n="clearHistory" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="clear_history_tooltip"></button>
-            <button type="button" id="reset" class="btn btn-secondary" data-i18n="reset" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="reset_tooltip"></button>
+            <button type="button" id="reset" class="btn btn-outline-dark" data-i18n="reset" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="reset_tooltip"></button>
         </div>
         <!-- 广告区域 -->
         <div class="my-4" id="advertising-container">

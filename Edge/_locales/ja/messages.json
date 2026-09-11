@@ -3,7 +3,7 @@
         "message": "閉じたタブを復元"
     },
     "description": {
-        "message": "ワンクリックで最近閉じたタブを復元、複数回のクリックやショートカット不要！シークレットモードで使用可能。拡張機能アイコンまたはウェブページの任意の場所を右クリックして履歴リストを表示。"
+        "message": "🚀 ワンクリックで最近閉じたタブを復元、複数回のクリックやショートカット不要！シークレットモードで使用可能。拡張機能アイコンまたはウェブページの任意の場所を右クリックして履歴リストを表示。"
     },
     "title": {
         "message": "閉じたタブを復元\n\n左クリックで復元\n右クリックで履歴を表示"
@@ -28,6 +28,18 @@
     },
     "restore_icon_tooltip": {
         "message": "このボタンをクリックすると、拡張アイコンがデフォルトの状態に戻ります。"
+    },
+    "icon_color_label": {
+        "message": "アイコンのカスタムカラー"
+    },
+    "icon_color_tooltip": {
+        "message": "アイコンに色を付けます。アップロードした画像では、非透明のピクセルのみが塗り直されます（形は保持されます）。"
+    },
+    "preset_icon_label": {
+        "message": "プリセットアイコン："
+    },
+    "preset_icon_tooltip": {
+        "message": "内蔵のアイコンを選ぶと、上で選んだ色で使用されます。"
     },
     "restore_settings": {
         "message": "タブの復元方法"
@@ -131,6 +143,24 @@
     "max_list_items_tooltip": {
         "message": "コンテキストメニューに表示する最近閉じたタブの数を設定します。"
     },
+    "menu_show_time_label": {
+        "message": "コンテキストメニューに閉じた時刻を表示する"
+    },
+    "menu_show_time_tooltip": {
+        "message": "有効にすると、各タブが閉じられた時刻がコンテキストメニューに表示されます。"
+    },
+    "menu_time_position_label": {
+        "message": "閉じた時刻の表示位置："
+    },
+    "menu_time_position_tooltip": {
+        "message": "コンテキストメニューで閉じた時刻をタブのタイトルの左側または右側に表示するかを選択します。"
+    },
+    "menu_time_position_left": {
+        "message": "左側に表示"
+    },
+    "menu_time_position_right": {
+        "message": "右側に表示"
+    },
     "closed_window": {
         "message": "閉じたウィンドウ"
     },
@@ -156,6 +186,95 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "このオプションを有効にすると、シークレットモードで拡張機能をクリックしたときに、自動的に拡張機能が記録した履歴を使用して復元します（ブラウザの内蔵復元機能はシークレットモードでは利用できないため）。"
+    },
+    "menu_seconds_ago": {
+        "message": "$count$秒前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_minutes_ago": {
+        "message": "$count$分前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_hours_ago": {
+        "message": "$count$時間前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_days_ago": {
+        "message": "$count$日前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_months_ago": {
+        "message": "$count$ヶ月前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_years_ago": {
+        "message": "$count$年前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_two_units_minutes_seconds": {
+        "message": "$minutes$分$seconds$秒前",
+        "placeholders": {
+            "minutes": { "content": "$1" },
+            "seconds": { "content": "$2" }
+        }
+    },
+    "menu_two_units_hours_minutes": {
+        "message": "$hours$時間$minutes$分前",
+        "placeholders": {
+            "hours": { "content": "$1" },
+            "minutes": { "content": "$2" }
+        }
+    },
+    "menu_two_units_days_hours": {
+        "message": "$days$日$hours$時間前",
+        "placeholders": {
+            "days": { "content": "$1" },
+            "hours": { "content": "$2" }
+        }
+    },
+    "menu_two_units_months_days": {
+        "message": "$months$ヶ月$days$日前",
+        "placeholders": {
+            "months": { "content": "$1" },
+            "days": { "content": "$2" }
+        }
+    },
+    "menu_two_units_years_months": {
+        "message": "$years$年$months$ヶ月前",
+        "placeholders": {
+            "years": { "content": "$1" },
+            "months": { "content": "$2" }
+        }
+    },
+    "menu_two_units_label": {
+        "message": "閉じた時刻を2つの単位で表示する"
+    },
+    "menu_two_units_tooltip": {
+        "message": "有効にすると、閉じた時刻が2つの単位で表示されます（例：「3分5秒前」「1時間2分前」）。無効な場合は最大単位のみ（例：「3分前」）。"
     },
     "shortcut_activate_2": {
         "message": "拡張機能を起動する（ショートカット2）"

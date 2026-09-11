@@ -1,6 +1,6 @@
 # 恢复关闭的标签页 - Chrome扩展
 
-[![Version](https://img.shields.io/badge/version-3.6-blue)]()
+[![Version](https://img.shields.io/badge/version-3.65-blue)]()
 
 一个简单实用的Chrome扩展，帮助您快速找回意外关闭的标签页。
 
@@ -11,6 +11,52 @@
 - 右键菜单快速访问关闭的标签页列表
 - 可自定义最大保存数量(最多1000个)
 - 多语言支持(中文、英文、日文等)
+
+## 目录结构
+
+```
+src/        ← 唯一源码编辑目录（manifest 不含 update_url，由构建脚本注入）
+Chrome/     ← Chrome 商店产物（构建生成，manifest 含 update_url）
+Edge/       ← Edge 商店产物（构建生成，无 update_url）
+build.py    ← 构建脚本（Python 3，零依赖）
+build.ps1   ← Windows PowerShell 封装
+build.cmd   ← Windows 双击运行封装
+```
+
+## 开发者：修改与构建
+
+**重要**：所有代码修改请只改 `src/` 目录。`Chrome/` 与 `Edge/` 是由 `build.py` 生成的产物，**不要手工修改**，否则下次构建会被覆盖。
+
+构建（需要 Python 3）：
+
+```powershell
+# 生成 Chrome/ 与 Edge/，并在 dist/ 打包两个商店的发布 zip
+.\build.ps1
+
+# 注入新版本号（zip 文件名同步）
+.\build.ps1 -Version 3.66
+
+# 只生成产物目录，不打包
+.\build.ps1 -NoZip
+
+# 生成前清空产物目录
+.\build.ps1 -Clean
+```
+
+或直接用 Python：
+
+```bash
+python build.py
+python build.py --version 3.66
+python build.py --no-zip
+```
+
+构建脚本完成的工作：
+
+- 将 `src/` 复制到 `Chrome/` 和 `Edge/`
+- 仅在 `Chrome/manifest.json` 注入 `update_url`（`https://clients2.google.com/service/update2/crx`）
+- `Edge/manifest.json` 不包含 `update_url`（正确做法）
+- **默认在 `dist/` 生成两个商店的发布 zip**：`recover-closed-tab-chrome-<版本>.zip` 与 `recover-closed-tab-edge-<版本>.zip`（加 `-NoZip` / `--no-zip` 可跳过）
 
 ## 使用方法
 
@@ -35,6 +81,7 @@
 
 - 最大保存的标签页数量(1-1000)
 - 是否启用右键菜单功能
+- 右键菜单中是否显示关闭时间（及显示在左侧或右侧、是否显示两级单位）
 - 恢复后是否激活标签页
 - 无痕模式下的行为设置
 

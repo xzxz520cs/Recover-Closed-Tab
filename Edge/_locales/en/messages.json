@@ -3,7 +3,7 @@
         "message": "Recover Closed Tab"
     },
     "description": {
-        "message": "Recover closed tabs with one click! Works in incognito mode. Right-click icon or webpage to show history."
+        "message": "🚀 Recover closed tabs with one click! Works in incognito mode. Right-click icon or webpage to show history."
     },
     "title": {
         "message": "Recover Closed Tab\n\nLeft-click to restore\nRight-click to view history"
@@ -28,6 +28,18 @@
     },
     "restore_icon_tooltip": {
         "message": "Click this button to restore the extension icon to its default state."
+    },
+    "icon_color_label": {
+        "message": "Custom icon color"
+    },
+    "icon_color_tooltip": {
+        "message": "Choose a color to tint the icon. For uploaded images, only non-transparent pixels are recolored (shape is preserved)."
+    },
+    "preset_icon_label": {
+        "message": "Preset icons:"
+    },
+    "preset_icon_tooltip": {
+        "message": "Pick a built-in icon and it will be used with the color chosen above."
     },
     "restore_settings": {
         "message": "Tab Recovery Method"
@@ -131,6 +143,24 @@
     "max_list_items_tooltip": {
         "message": "Set the number of recently closed tabs displayed in the context menu, ranging from 1 to 1000 (maximum 25 when using the browser's built-in restore function due to browser limitations)."
     },
+    "menu_show_time_label": {
+        "message": "Show close time in the context menu"
+    },
+    "menu_show_time_tooltip": {
+        "message": "When enabled, the time when each tab was closed is shown in the context menu."
+    },
+    "menu_time_position_label": {
+        "message": "Close time display position:"
+    },
+    "menu_time_position_tooltip": {
+        "message": "Choose whether the close time appears on the left or right side of the tab title in the context menu."
+    },
+    "menu_time_position_left": {
+        "message": "Show on the left"
+    },
+    "menu_time_position_right": {
+        "message": "Show on the right"
+    },
     "closed_window": {
         "message": "Closed window"
     },
@@ -156,6 +186,95 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "When enabled, clicking the extension in Incognito mode will automatically use the extension's recorded history to restore (since the browser's built-in restore function is unavailable in Incognito mode)."
+    },
+    "menu_seconds_ago": {
+        "message": "$count$ seconds ago",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_minutes_ago": {
+        "message": "$count$ minutes ago",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_hours_ago": {
+        "message": "$count$ hours ago",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_days_ago": {
+        "message": "$count$ days ago",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_months_ago": {
+        "message": "$count$ months ago",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_years_ago": {
+        "message": "$count$ years ago",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_two_units_minutes_seconds": {
+        "message": "$minutes$ min $seconds$ sec ago",
+        "placeholders": {
+            "minutes": { "content": "$1" },
+            "seconds": { "content": "$2" }
+        }
+    },
+    "menu_two_units_hours_minutes": {
+        "message": "$hours$ hr $minutes$ min ago",
+        "placeholders": {
+            "hours": { "content": "$1" },
+            "minutes": { "content": "$2" }
+        }
+    },
+    "menu_two_units_days_hours": {
+        "message": "$days$ d $hours$ hr ago",
+        "placeholders": {
+            "days": { "content": "$1" },
+            "hours": { "content": "$2" }
+        }
+    },
+    "menu_two_units_months_days": {
+        "message": "$months$ mo $days$ d ago",
+        "placeholders": {
+            "months": { "content": "$1" },
+            "days": { "content": "$2" }
+        }
+    },
+    "menu_two_units_years_months": {
+        "message": "$years$ yr $months$ mo ago",
+        "placeholders": {
+            "years": { "content": "$1" },
+            "months": { "content": "$2" }
+        }
+    },
+    "menu_two_units_label": {
+        "message": "Show close time with two units"
+    },
+    "menu_two_units_tooltip": {
+        "message": "When enabled, close time is shown with two units (e.g., '3 min 5 sec ago', '1 hr 2 min ago'); when off, only the largest unit is shown (e.g., '3 minutes ago')."
     },
     "shortcut_activate_2": {
         "message": "Activate extension (shortcut 2)"

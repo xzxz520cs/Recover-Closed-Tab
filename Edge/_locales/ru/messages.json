@@ -3,7 +3,7 @@
         "message": "Восстановить закрытую вкладку"
     },
     "description": {
-        "message": "Восстановите закрытые вкладки одним щелчком! Работает в режиме инкогнито. Щелкните правой кнопкой по значку."
+        "message": "🚀 Восстановите закрытые вкладки одним щелчком! Работает в режиме инкогнито. Щелкните правой кнопкой по значку."
     },
     "title": {
         "message": "Восстановить закрытую вкладку\n\nЛевый клик для восстановления\nПравый клик для просмотра истории"
@@ -28,6 +28,18 @@
     },
     "restore_icon_tooltip": {
         "message": "Нажмите эту кнопку, чтобы восстановить иконку расширения до стандартного состояния."
+    },
+    "icon_color_label": {
+        "message": "Пользовательский цвет иконки"
+    },
+    "icon_color_tooltip": {
+        "message": "Выберите цвет для окрашивания иконки. Для загруженных изображений перекрашиваются только непрозрачные пиксели (форма сохраняется)."
+    },
+    "preset_icon_label": {
+        "message": "Предустановленные иконки:"
+    },
+    "preset_icon_tooltip": {
+        "message": "Выберите встроенную иконку, и она будет использоваться с выбранным выше цветом."
     },
     "restore_settings": {
         "message": "Способ восстановления вкладок"
@@ -131,6 +143,24 @@
     "max_list_items_tooltip": {
         "message": "Установите количество недавно закрытых вкладок, отображаемых в контекстном меню, от 1 до 1000 (максимум 25 при использовании встроенной функции восстановления браузера из-за ограничений браузера)."
     },
+    "menu_show_time_label": {
+        "message": "Показывать время закрытия в контекстном меню"
+    },
+    "menu_show_time_tooltip": {
+        "message": "При включении время закрытия каждой вкладки отображается в контекстном меню."
+    },
+    "menu_time_position_label": {
+        "message": "Позиция времени закрытия:"
+    },
+    "menu_time_position_tooltip": {
+        "message": "Выберите, будет ли время закрытия отображаться слева или справа от заголовка вкладки в контекстном меню."
+    },
+    "menu_time_position_left": {
+        "message": "Отображать слева"
+    },
+    "menu_time_position_right": {
+        "message": "Отображать справа"
+    },
     "closed_window": {
         "message": "Закрытое окно"
     },
@@ -156,6 +186,95 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "При включении, при нажатии на расширение в режиме инкогнито, автоматически будет использоваться записанная история расширения для восстановления (так как встроенная функция восстановления браузера недоступна в режиме инкогнито)."
+    },
+    "menu_seconds_ago": {
+        "message": "$count$ сек. назад",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_minutes_ago": {
+        "message": "$count$ мин. назад",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_hours_ago": {
+        "message": "$count$ ч. назад",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_days_ago": {
+        "message": "$count$ дн. назад",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_months_ago": {
+        "message": "$count$ мес. назад",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_years_ago": {
+        "message": "$count$ г. назад",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_two_units_minutes_seconds": {
+        "message": "$minutes$ мин $seconds$ сек назад",
+        "placeholders": {
+            "minutes": { "content": "$1" },
+            "seconds": { "content": "$2" }
+        }
+    },
+    "menu_two_units_hours_minutes": {
+        "message": "$hours$ ч $minutes$ мин назад",
+        "placeholders": {
+            "hours": { "content": "$1" },
+            "minutes": { "content": "$2" }
+        }
+    },
+    "menu_two_units_days_hours": {
+        "message": "$days$ д $hours$ ч назад",
+        "placeholders": {
+            "days": { "content": "$1" },
+            "hours": { "content": "$2" }
+        }
+    },
+    "menu_two_units_months_days": {
+        "message": "$months$ мес $days$ д назад",
+        "placeholders": {
+            "months": { "content": "$1" },
+            "days": { "content": "$2" }
+        }
+    },
+    "menu_two_units_years_months": {
+        "message": "$years$ г $months$ мес назад",
+        "placeholders": {
+            "years": { "content": "$1" },
+            "months": { "content": "$2" }
+        }
+    },
+    "menu_two_units_label": {
+        "message": "Показывать время закрытия с двумя единицами"
+    },
+    "menu_two_units_tooltip": {
+        "message": "При включении время закрытия отображается в двух единицах (например, '3 мин 5 сек назад', '1 ч 2 мин назад'); при выключении — только крупнейшая единица (например, '3 мин назад')."
     },
     "shortcut_activate_2": {
         "message": "Активировать расширение (горячая клавиша 2)"

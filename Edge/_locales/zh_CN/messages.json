@@ -3,7 +3,7 @@
         "message": "恢复关闭的标签页"
     },
     "description": {
-        "message": "一次点击恢复最近关闭的标签页，无需多次点击，无需快捷键！可在无痕模式下使用。右键扩展图标或网页任意位置可显示历史记录列表。"
+        "message": "🚀 一次点击恢复最近关闭的标签页，无需多次点击，无需快捷键！可在无痕模式下使用。右键扩展图标或网页任意位置可显示历史记录列表。"
     },
     "title": {
         "message": "恢复已关闭的标签页\n\n左键点击即可恢复\n右键点击查看历史记录"
@@ -28,6 +28,18 @@
     },
     "restore_icon_tooltip": {
         "message": "点击此按钮，扩展图标将恢复为默认状态。"
+    },
+    "icon_color_label": {
+        "message": "自定义图标颜色"
+    },
+    "icon_color_tooltip": {
+        "message": "选择颜色为图标着色。对于上传的图片，仅对非透明像素重新着色（保留原有形状）。"
+    },
+    "preset_icon_label": {
+        "message": "预设图标："
+    },
+    "preset_icon_tooltip": {
+        "message": "选择一个内置图标，它将使用上方选择的颜色。"
     },
     "restore_settings": {
         "message": "恢复方式"
@@ -131,6 +143,24 @@
     "max_list_items_tooltip": {
         "message": "设置右键菜单中显示的最近关闭的标签页数量，范围在1到1000之间（因浏览器限制，选择“使用浏览器内置功能恢复”时最大为25条）。"
     },
+    "menu_show_time_label": {
+        "message": "在右键菜单中显示关闭时间"
+    },
+    "menu_show_time_tooltip": {
+        "message": "启用后，右键菜单中会显示每个标签页的关闭时间。"
+    },
+    "menu_time_position_label": {
+        "message": "关闭时间的显示位置："
+    },
+    "menu_time_position_tooltip": {
+        "message": "选择关闭时间在右键菜单中显示在标签页标题的左侧还是右侧。"
+    },
+    "menu_time_position_left": {
+        "message": "显示在左侧"
+    },
+    "menu_time_position_right": {
+        "message": "显示在右侧"
+    },
     "closed_window": {
         "message": "已关闭的窗口"
     },
@@ -156,6 +186,95 @@
     },
     "useOldMethodInIncognito_tooltip": {
         "message": "启用此选项后，当您在无痕模式下点击扩展时，将自动使用扩展记录的历史记录进行恢复（因为浏览器内置的恢复功能在无痕模式下不可用）。"
+    },
+    "menu_seconds_ago": {
+        "message": "$count$秒前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_minutes_ago": {
+        "message": "$count$分钟前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_hours_ago": {
+        "message": "$count$小时前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_days_ago": {
+        "message": "$count$天前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_months_ago": {
+        "message": "$count$个月前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_years_ago": {
+        "message": "$count$年前",
+        "placeholders": {
+            "count": {
+                "content": "$1"
+            }
+        }
+    },
+    "menu_two_units_minutes_seconds": {
+        "message": "$minutes$分$seconds$秒前",
+        "placeholders": {
+            "minutes": { "content": "$1" },
+            "seconds": { "content": "$2" }
+        }
+    },
+    "menu_two_units_hours_minutes": {
+        "message": "$hours$小时$minutes$分钟前",
+        "placeholders": {
+            "hours": { "content": "$1" },
+            "minutes": { "content": "$2" }
+        }
+    },
+    "menu_two_units_days_hours": {
+        "message": "$days$天$hours$小时前",
+        "placeholders": {
+            "days": { "content": "$1" },
+            "hours": { "content": "$2" }
+        }
+    },
+    "menu_two_units_months_days": {
+        "message": "$months$个月$days$天前",
+        "placeholders": {
+            "months": { "content": "$1" },
+            "days": { "content": "$2" }
+        }
+    },
+    "menu_two_units_years_months": {
+        "message": "$years$年$months$个月前",
+        "placeholders": {
+            "years": { "content": "$1" },
+            "months": { "content": "$2" }
+        }
+    },
+    "menu_two_units_label": {
+        "message": "关闭时间显示两级单位"
+    },
+    "menu_two_units_tooltip": {
+        "message": "启用后，关闭时间按两级单位显示（如“3分5秒前”、“1小时2分钟前”）；关闭时仅显示最大单位（如“3分钟前”）。"
     },
     "shortcut_activate_2": {
         "message": "激活扩展（快捷键2）"
