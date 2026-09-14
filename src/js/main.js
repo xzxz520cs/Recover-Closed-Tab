@@ -20,6 +20,130 @@ const EXTENSION_VERSION_KEY = "extensionVersion";
 let isCreatingContextMenu = false;
 let pendingCreateContextMenu = false;
 
+// ⚠️ 关于无痕模式（manifest 中 "incognito": "split"）：
+// 常规与无痕是【两个独立的扩展实例】（共享同一份 chrome.storage），但 Chromium 的
+// MenuManager 是 ProfileSelections(kRedirectedToOriginal)——两个实例共用同一个菜单管理器。
+// chrome.contextMenus.create/update/remove 的 id 带「是否无痕」标记，只作用于本实例；
+// 但 removeAll() 是按扩展 id 清空整张表、不区分上下文，会把另一个实例的菜单项一起删掉，
+// 导致那个窗口的扩展菜单整块消失（要等到在那个窗口关一次标签才重建）。
+// 因此本文件【绝不使用 removeAll】，改为只清除本实例自己创建的菜单项。
+function isIncognitoContext() {
+    return !!chrome.extension.inIncognitoContext;
+}
+
+// 菜单项 id 记录键：按上下文分开存，避免两个实例互相覆盖
+function getMenuIdsStorageKey() {
+    return isIncognitoContext() ? 'menuItemIds_incognito' : 'menuItemIds_regular';
+}
+
+// 读取并清空 chrome.runtime.lastError（避免 Unchecked runtime.lastError 刷屏）
+function takeLastErrorMessage() {
+    const error = chrome.runtime.lastError;
+    return error && error.message ? error.message : '';
+}
+
+// 清除本上下文创建的菜单项（不使用 removeAll，原因见上）
+function clearOwnMenuItems(callback) {
+    const storageKey = getMenuIdsStorageKey();
+    chrome.storage.local.get({ [storageKey]: [] }, function (data) {
+        const message = takeLastErrorMessage();
+        if (message) {
+            console.warn('读取右键菜单项记录失败：' + message);
+        }
+        const ids = Array.isArray(data[storageKey]) ? data[storageKey] : [];
+        if (ids.length === 0) {
+            callback();
+            return;
+        }
+        let remaining = ids.length;
+        ids.forEach(function (id) {
+            chrome.contextMenus.remove(id, function () {
+                const errorMessage = takeLastErrorMessage();
+                // 项不存在（例如无痕 profile 已被 Chromium 自动清理）属正常情况
+                if (errorMessage && !/cannot find menu item/i.test(errorMessage)) {
+                    console.warn('移除右键菜单项失败（' + id + '）：' + errorMessage);
+                }
+                remaining--;
+                if (remaining <= 0) callback();
+            });
+        });
+    });
+}
+
+// 保存本上下文创建的菜单项 id 列表（供下次清理使用）
+function saveOwnMenuIds(ids) {
+    chrome.storage.local.set({ [getMenuIdsStorageKey()]: ids }, function () {
+        const message = takeLastErrorMessage();
+        if (message) {
+            console.warn('保存右键菜单项记录失败：' + message);
+        }
+    });
+}
+
+// 关闭右键菜单功能时：只清理本上下文自己的菜单项
+function removeOwnMenuItems() {
+    clearOwnMenuItems(function () {
+        saveOwnMenuIds([]);
+    });
+}
+
+// 菜单布局版本：旧版本使用 removeAll + 固定 id，升级后无法枚举旧菜单项，
+// 因此每个布局版本做一次（仅常规上下文参与）的一次性清理，并广播给另一个上下文重建。
+const MENU_LAYOUT_VERSION = 2;
+const MENU_LAYOUT_VERSION_KEY = 'menuLayoutVersion';
+
+// 构建前准备：必要时做一次性迁移清理，然后清除本上下文自己的菜单项
+function prepareOwnMenuItems(callback) {
+    chrome.storage.local.get({ [MENU_LAYOUT_VERSION_KEY]: 0 }, function (data) {
+        const message = takeLastErrorMessage();
+        if (message) {
+            console.warn('读取右键菜单布局版本失败：' + message);
+        }
+
+        if (data[MENU_LAYOUT_VERSION_KEY] < MENU_LAYOUT_VERSION && !isIncognitoContext()) {
+            // 仅常规上下文执行唯一一次 removeAll，然后写入新版本号：storage.onChanged
+            // 会让两个上下文都重建自己的菜单，所以不会出现“某个窗口菜单消失”的问题。
+            chrome.contextMenus.removeAll(function () {
+                takeLastErrorMessage();
+                chrome.storage.local.set({ [MENU_LAYOUT_VERSION_KEY]: MENU_LAYOUT_VERSION }, function () {
+                    const setMessage = takeLastErrorMessage();
+                    if (setMessage) {
+                        console.warn('写入右键菜单布局版本失败：' + setMessage);
+                    }
+                    saveOwnMenuIds([]);
+                    callback();
+                });
+            });
+            return;
+        }
+
+        clearOwnMenuItems(callback);
+    });
+}
+
+// 创建单个菜单项；若同 id 已存在（旧版本残留等）则退化为 update，保证菜单能建起来
+function createContextMenuItem(properties) {
+    chrome.contextMenus.create(properties, function () {
+        const errorMessage = takeLastErrorMessage();
+        if (!errorMessage) return;
+        if (!/duplicate id/i.test(errorMessage)) {
+            console.warn('创建右键菜单项失败（' + properties.id + '）：' + errorMessage);
+            return;
+        }
+        const patch = { title: properties.title };
+        if (properties.contexts) patch.contexts = properties.contexts;
+        if (properties.parentId) patch.parentId = properties.parentId;
+        if (typeof properties.enabled === 'boolean') patch.enabled = properties.enabled;
+        if (typeof properties.visible === 'boolean') patch.visible = properties.visible;
+        chrome.contextMenus.update(properties.id, patch, function () {
+            const updateMessage = takeLastErrorMessage();
+            if (updateMessage) {
+                console.warn('更新右键菜单项失败（' + properties.id + '）：' + updateMessage);
+            }
+        });
+    });
+}
+
 // 默认设置
 const defaultSettings = {
     restoreMethod: 'sessions',
@@ -75,7 +199,7 @@ function initialize() {
         if (data.enableContextMenu) {
             createContextMenu();
         } else {
-            chrome.contextMenus.removeAll();
+            removeOwnMenuItems();
         }
     });
 
@@ -185,10 +309,10 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
                 if (data.enableContextMenu) {
                     createContextMenu();
                 } else {
-                    chrome.contextMenus.removeAll();
+                    removeOwnMenuItems();
                 }
             });
-        } else if ('maxListItems' in changes || 'restoreMethod' in changes || 'useOldMethodInIncognito' in changes || 'menuShowTime' in changes || 'menuTimePosition' in changes || 'menuTimeTwoUnits' in changes) {
+        } else if ('maxListItems' in changes || 'restoreMethod' in changes || 'useOldMethodInIncognito' in changes || 'menuShowTime' in changes || 'menuTimePosition' in changes || 'menuTimeTwoUnits' in changes || MENU_LAYOUT_VERSION_KEY in changes) {
             // 当其他相关设置变化时，只更新上下文菜单
             chrome.storage.local.get({ enableContextMenu: true }, function (data) {
                 if (data.enableContextMenu) {
@@ -318,7 +442,8 @@ chrome.commands.onCommand.addListener(function (command) {
 // 监听标签页创建事件
 chrome.tabs.onCreated.addListener(function (tab) {
     if (tab.url && tab.url !== 'chrome://newtab/' && tab.url !== 'about:blank') {
-        openTabsMap[tab.id] = { url: tab.url, title: tab.title };
+        // 记录 incognito 标记：两个扩展实例共用一份 openTabsMap，需要区分归属
+        openTabsMap[tab.id] = { url: tab.url, title: tab.title, incognito: !!tab.incognito };
         saveOpenTabsData();
     }
 });
@@ -326,52 +451,48 @@ chrome.tabs.onCreated.addListener(function (tab) {
 // 监听标签页更新事件
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     if (tab.url && tab.url !== 'chrome://newtab/' && tab.url !== 'about:blank') {
-        openTabsMap[tabId] = { url: tab.url, title: tab.title };
+        openTabsMap[tabId] = { url: tab.url, title: tab.title, incognito: !!tab.incognito };
         saveOpenTabsData();
     }
 });
 
-// 重新打开已关闭的标签页
+// 重新打开已关闭的标签页（对应菜单项 id 为 closedTab_*，数据来自扩展自己记录的历史）
 function reopenClosedTab(tabInfo, index) {
-    chrome.storage.local.get({ 'restoreMethod': 'old', 'restoreToEnd': true, 'useOldMethodInIncognito': true }, function (result) {
-        let restoreMethod = result.restoreMethod || 'old';
+    if (!tabInfo) return;
+
+    chrome.storage.local.get({ 'restoreToEnd': true }, function (result) {
         let restoreToEnd = result.restoreToEnd;
-        let useOldMethodInIncognito = result.useOldMethodInIncognito;
 
-        // 检测无痕模式
-        let isIncognito = chrome.extension.inIncognitoContext;
-        if (isIncognito && useOldMethodInIncognito && restoreMethod === 'sessions') {
-            restoreMethod = 'old';
-        }
-
-        if (restoreMethod === 'old') {
-            if (tabInfo.url.startsWith('file://')) {
-                chrome.tabs.create({
-                    url: chrome.runtime.getURL('unreachable.html') + '?fileUrl=' + encodeURIComponent(tabInfo.url)
-                });
-            } else {
-                chrome.tabs.create({ url: tabInfo.url }, function (newTab) {
-                    if (restoreToEnd) {
-                        chrome.tabs.move(newTab.id, { index: -1 }, function () {
-                            chrome.tabs.update(newTab.id, { active: true });
-                        });
-                    }
-                });
-            }
-
-            // 从列表中移除已打开的标签页
-            closedTabsList.splice(index, 1);
-            saveClosedTabsData();
-
-            // 更新上下文菜单
-            chrome.storage.local.get({ enableContextMenu: true }, function (data) {
-                if (data.enableContextMenu) {
-                    createContextMenu();
-                }
+        // 说明：tabInfo 来自扩展自己记录的历史，直接打开对应 URL 即可，不再受
+        // restoreMethod 影响（无痕上下文的菜单也只可能来自这份历史）。
+        if (tabInfo.url.startsWith('file://')) {
+            chrome.tabs.create({
+                url: chrome.runtime.getURL('unreachable.html') + '?fileUrl=' + encodeURIComponent(tabInfo.url)
             });
         } else {
-            console.log("无法在无痕模式下使用 'sessions' 方法恢复标签页");
+            chrome.tabs.create({ url: tabInfo.url }, function (newTab) {
+                if (restoreToEnd) {
+                    chrome.tabs.move(newTab.id, { index: -1 }, function () {
+                        chrome.tabs.update(newTab.id, { active: true });
+                    });
+                }
+            });
         }
+
+        // 从列表中移除已打开的标签页（索引失效时按对象查找兑底）
+        let removeIndex = (typeof index === 'number' && closedTabsList[index] === tabInfo) ?
+            index : closedTabsList.indexOf(tabInfo);
+        if (removeIndex >= 0) {
+            closedTabsList.splice(removeIndex, 1);
+        }
+        saveClosedTabsData();
+
+        // 更新上下文菜单
+        chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+            if (data.enableContextMenu) {
+                createContextMenu();
+            }
+        });
     });
 }
 
@@ -593,7 +714,7 @@ function buildMenuTitle(title, timeStampMs, isSeconds, showTime, timePosition, t
     return relativeTime + MENU_SEPARATOR + name;
 }
 
-// 创建上下文菜单
+// 创建上下文菜单（去抖入口；真正构建见 buildContextMenu）
 function createContextMenu() {
     if (isCreatingContextMenu) {
         pendingCreateContextMenu = true;
@@ -602,217 +723,255 @@ function createContextMenu() {
     isCreatingContextMenu = true;
     pendingCreateContextMenu = false;
 
-    chrome.contextMenus.removeAll(function () {
-        chrome.storage.local.get({
-            'restoreMethod': 'sessions',
-            'maxListItems': 25,
-            'enableContextMenu': true,
-            'useOldMethodInIncognito': true, // 获取新选项
-            'menuShowTime': true,
-            'menuTimePosition': 'left',
-            'menuTimeTwoUnits': false
-        }, function (result) {
-            let restoreMethod = result.restoreMethod || 'sessions';
-            let maxListItems = result.maxListItems || 25;
-            let enableContextMenu = result.enableContextMenu;
-            let useOldMethodInIncognito = result.useOldMethodInIncognito;
-            let menuShowTime = result.menuShowTime;
-            let menuTimePosition = result.menuTimePosition;
-            let menuTimeTwoUnits = result.menuTimeTwoUnits;
+    // 构建前先清理菜单项：正常路径只清本上下文自己的项，升级后首次会做一次性迁移
+    // （正常路径不使用 removeAll：split 模式下会把另一个上下文【常规/无痕】创建的
+    //  菜单项一起删掉，导致那个窗口的菜单整块消失）
+    prepareOwnMenuItems(function () {
+        let finished = false;
+        // 看门狗：任何异常或遗失的回调都不允许永久卡住菜单重建
+        const watchdog = setTimeout(finishBuild, 5000);
 
-            // 使用 chrome.extension.inIncognitoContext 检测无痕模式
-            let isIncognito = chrome.extension.inIncognitoContext;
-            if (isIncognito && useOldMethodInIncognito && restoreMethod === 'sessions') {
-                // 如果在无痕模式下，并且启用设置，则切换为 'old' 方法
-                restoreMethod = 'old';
+        function finishBuild() {
+            if (finished) return;
+            finished = true;
+            clearTimeout(watchdog);
+            isCreatingContextMenu = false;
+            if (pendingCreateContextMenu) {
+                createContextMenu();
+            }
+        }
+
+        try {
+            buildContextMenu(function (createdIds) {
+                saveOwnMenuIds(createdIds);
+                finishBuild();
+            });
+        } catch (e) {
+            console.warn('构建右键菜单时出错：' + (e && e.message ? e.message : e));
+            finishBuild();
+        }
+    });
+}
+
+// 构建菜单项；done(createdIds) 在全部菜单项创建请求发出后调用
+function buildContextMenu(done) {
+    chrome.storage.local.get({
+        'restoreMethod': 'sessions',
+        'maxListItems': 25,
+        'enableContextMenu': true,
+        'useOldMethodInIncognito': true, // 兼容旧设置：现在只影响“点击扩展图标恢复”的行为
+        'menuShowTime': true,
+        'menuTimePosition': 'left',
+        'menuTimeTwoUnits': false
+    }, function (result) {
+        const settingsErrorMessage = takeLastErrorMessage();
+        if (settingsErrorMessage) {
+            console.warn('读取右键菜单设置失败：' + settingsErrorMessage);
+        }
+
+        const createdIds = [];
+        let clearHistoryItemAdded = false;
+
+        // 创建菜单项并记录 id（供下次清理本上下文旧菜单项使用）
+        function createItem(properties) {
+            createdIds.push(properties.id);
+            createContextMenuItem(properties);
+        }
+
+        // '清除扩展中的历史记录'：只在扩展图标(action)右键菜单中显示，避免页面右键菜单多出这一项
+        function addClearHistoryItem() {
+            if (clearHistoryItemAdded) return;
+            clearHistoryItemAdded = true;
+            createItem({
+                id: 'clearExtensionHistory',
+                title: chrome.i18n.getMessage('clear_extension_history'),
+                contexts: ['action']
+            });
+        }
+
+        // 用扩展自己记录的已关闭标签页填充菜单（时间可在左或在右，也可隐藏）
+        function addOwnHistoryItems() {
+            let numTabsToShow = Math.min(closedTabsList.length, maxListItems);
+            let items = [];
+            for (let i = closedTabsList.length - 1; i >= closedTabsList.length - numTabsToShow; i--) {
+                let tabInfo = closedTabsList[i];
+                if (!tabInfo) continue;
+                items.push({
+                    id: 'closedTab_' + i,
+                    title: tabInfo.title || tabInfo.url, // 如果没有标题，使用URL
+                    timeMs: tabInfo.closedAt,
+                    isSeconds: false
+                });
             }
 
-            if (enableContextMenu) {
-                // 创建 '最近关闭的标签页' 父菜单项
-                chrome.contextMenus.create({
-                    id: 'recentlyClosedTabs',
-                    title: chrome.i18n.getMessage('recently_closed_tabs'),
+            // 计算右对齐目标总宽度（固定宽度与最长条目的较大值）
+            let menuAlignTarget = computeMenuTimeAlignTarget(items, menuTimeTwoUnits);
+
+            // 按设置生成标题（时间可在左或在右，也可隐藏，右侧可右对齐）
+            items.forEach(function (item) {
+                createItem({
+                    id: item.id,
+                    parentId: 'recentlyClosedTabs',
+                    title: buildMenuTitle(item.title, item.timeMs, item.isSeconds, menuShowTime, menuTimePosition, menuAlignTarget, menuTimeTwoUnits),
                     contexts: ['action', 'page']
                 });
+            });
+        }
 
-                // 如果 restoreMethod 是 'old'，则添加 '清除扩展中的历史记录' 功能
-                // 该菜单项只在扩展图标(action)右键菜单中显示，避免页面右键菜单多出这一项
-                if (restoreMethod === 'old') {
-                    chrome.contextMenus.create({
-                        id: 'clearExtensionHistory',
-                        title: chrome.i18n.getMessage('clear_extension_history'),
-                        contexts: ['action']
+        // 用浏览器内置的最近关闭列表填充菜单
+        function addSessionItems(sessions) {
+            let items = [];
+            sessions.forEach(function (session) {
+                if (session.tab) {
+                    let tab = session.tab;
+                    items.push({
+                        id: 'sessionTab_' + tab.sessionId,
+                        title: tab.title || tab.url,
+                        timeMs: session.lastModified,
+                        isSeconds: true
+                    });
+                } else if (session.window) {
+                    let windowSessionId = session.window.sessionId;
+                    let windowTabs = session.window.tabs;
+                    let title = windowTabs && windowTabs.length > 0 ?
+                        chrome.i18n.getMessage('closed_window_with_count_and_title', [windowTabs.length, windowTabs[0].title || windowTabs[0].url]) :
+                        chrome.i18n.getMessage('closed_window');
+                    items.push({
+                        id: 'sessionWindow_' + windowSessionId,
+                        title: title,
+                        timeMs: session.lastModified,
+                        isSeconds: true
                     });
                 }
+            });
 
-                if (restoreMethod === 'sessions') {
-                    // 使用 chrome.sessions API 获取最近关闭的会话
-                    chrome.sessions.getRecentlyClosed({ maxResults: Math.min(maxListItems, 25) }, function (sessions) {
-                        // 先收集该菜单下的所有条目，用于计算时间对齐宽度
-                        let items = [];
-                        sessions.forEach(function (session) {
-                            if (session.tab) {
-                                let tab = session.tab;
-                                items.push({
-                                    id: 'sessionTab_' + tab.sessionId,
-                                    title: tab.title || tab.url,
-                                    timeMs: session.lastModified,
-                                    isSeconds: true
-                                });
-                            } else if (session.window) {
-                                let windowSessionId = session.window.sessionId;
-                                let windowTabs = session.window.tabs;
-                                let title = windowTabs && windowTabs.length > 0 ?
-                                    chrome.i18n.getMessage('closed_window_with_count_and_title', [windowTabs.length, windowTabs[0].title || windowTabs[0].url]) :
-                                    chrome.i18n.getMessage('closed_window');
-                                items.push({
-                                    id: 'sessionWindow_' + windowSessionId,
-                                    title: title,
-                                    timeMs: session.lastModified,
-                                    isSeconds: true
-                                });
-                            }
-                        });
+            // 计算右对齐目标总宽度（固定宽度与最长条目的较大值）
+            let menuAlignTarget = computeMenuTimeAlignTarget(items, menuTimeTwoUnits);
 
-                        // 计算右对齐目标总宽度（固定宽度与最长条目的较大值）
-                        let menuAlignTarget = computeMenuTimeAlignTarget(items, menuTimeTwoUnits);
+            // 按设置生成标题（时间可在左或在右，也可隐藏，右侧可右对齐）
+            items.forEach(function (item) {
+                createItem({
+                    id: item.id,
+                    parentId: 'recentlyClosedTabs',
+                    title: buildMenuTitle(item.title, item.timeMs, item.isSeconds, menuShowTime, menuTimePosition, menuAlignTarget, menuTimeTwoUnits),
+                    contexts: ['action', 'page']
+                });
+            });
+        }
 
-                        // 按设置生成标题（时间可在左或在右，也可隐藏，右侧可右对齐）
-                        items.forEach(function (item) {
-                            chrome.contextMenus.create({
-                                id: item.id,
-                                parentId: 'recentlyClosedTabs',
-                                title: buildMenuTitle(item.title, item.timeMs, item.isSeconds, menuShowTime, menuTimePosition, menuAlignTarget, menuTimeTwoUnits),
-                                contexts: ['action', 'page']
-                            });
-                        });
+        let restoreMethod = result.restoreMethod || 'sessions';
+        let maxListItems = result.maxListItems || 25;
+        let enableContextMenu = result.enableContextMenu;
+        let menuShowTime = result.menuShowTime;
+        let menuTimePosition = result.menuTimePosition;
+        let menuTimeTwoUnits = result.menuTimeTwoUnits;
 
-                        isCreatingContextMenu = false;
-                        if (pendingCreateContextMenu) {
-                            createContextMenu();
-                        }
-                    });
-                } else if (restoreMethod === 'old') {
-                    // 使用自定义列表
-                    let numTabsToShow = Math.min(closedTabsList.length, maxListItems);
-                    let items = [];
-                    for (let i = closedTabsList.length - 1; i >= closedTabsList.length - numTabsToShow; i--) {
-                        let tabInfo = closedTabsList[i];
-                        items.push({
-                            id: 'closedTab_' + i,
-                            title: tabInfo.title || tabInfo.url, // 如果没有标题，使用URL
-                            timeMs: tabInfo.closedAt,
-                            isSeconds: false
-                        });
-                    }
+        if (!enableContextMenu) {
+            done(createdIds);
+            return;
+        }
 
-                    // 计算右对齐目标总宽度（固定宽度与最长条目的较大值）
-                    let menuAlignTarget = computeMenuTimeAlignTarget(items, menuTimeTwoUnits);
+        // 无痕上下文固定使用扩展自己记录的历史：
+        // chrome.sessions 依赖 SessionService，而无痕 profile 下它返回 NULL，拿不到任何数据。
+        if (isIncognitoContext()) {
+            restoreMethod = 'old';
+        }
 
-                    // 按设置生成标题（时间可在左或在右，也可隐藏，右侧可右对齐）
-                    items.forEach(function (item) {
-                        chrome.contextMenus.create({
-                            id: item.id,
-                            parentId: 'recentlyClosedTabs',
-                            title: buildMenuTitle(item.title, item.timeMs, item.isSeconds, menuShowTime, menuTimePosition, menuAlignTarget, menuTimeTwoUnits),
-                            contexts: ['action', 'page']
-                        });
-                    });
-
-                    isCreatingContextMenu = false;
-                    if (pendingCreateContextMenu) {
-                        createContextMenu();
-                    }
-                } else {
-                    isCreatingContextMenu = false;
-                    if (pendingCreateContextMenu) {
-                        createContextMenu();
-                    }
-                }
-            } else {
-                isCreatingContextMenu = false;
-                if (pendingCreateContextMenu) {
-                    createContextMenu();
-                }
-            }
+        // 创建 '最近关闭的标签页' 父菜单项
+        createItem({
+            id: 'recentlyClosedTabs',
+            title: chrome.i18n.getMessage('recently_closed_tabs'),
+            contexts: ['action', 'page']
         });
+
+        // 如果 restoreMethod 是 'old'，则添加 '清除扩展中的历史记录' 功能
+        if (restoreMethod === 'old') {
+            addClearHistoryItem();
+        }
+
+        if (restoreMethod === 'sessions') {
+            // 使用 chrome.sessions API 获取最近关闭的会话
+            chrome.sessions.getRecentlyClosed({ maxResults: Math.min(maxListItems, 25) }, function (sessions) {
+                const sessionsErrorMessage = takeLastErrorMessage();
+                if (sessionsErrorMessage || !Array.isArray(sessions)) {
+                    // 无痕模式或其它异常下拿不到浏览器会话，降级为扩展自己记录的历史
+                    console.warn('获取浏览器最近关闭的标签页失败，改用扩展记录的历史：' +
+                        (sessionsErrorMessage || '返回数据异常'));
+                    addClearHistoryItem();
+                    addOwnHistoryItems();
+                } else {
+                    addSessionItems(sessions);
+                }
+                done(createdIds);
+            });
+        } else if (restoreMethod === 'old') {
+            // 使用自定义列表
+            addOwnHistoryItems();
+            done(createdIds);
+        } else {
+            done(createdIds);
+        }
     });
 }
 
 // 监听上下文菜单点击事件
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     if (info.menuItemId.startsWith('sessionTab_')) {
+        // sessionTab_* 只可能由「浏览器内置方式(sessions)」生成，且只出现在能调用
+        // chrome.sessions 的上下文（常规），因此这里直接走浏览器会话恢复。
         let sessionId = info.menuItemId.substring('sessionTab_'.length);
 
-        chrome.storage.local.get({ 'restoreToEnd': true, 'useOldMethodInIncognito': true }, function (result) {
+        if (!chrome.sessions || !chrome.sessions.restore) {
+            console.warn('当前上下文不支持 chrome.sessions，无法恢复该标签页。');
+            return;
+        }
+
+        chrome.storage.local.get({ 'restoreToEnd': true }, function (result) {
             let restoreToEnd = result.restoreToEnd;
-            let useOldMethodInIncognito = result.useOldMethodInIncognito;
 
-            let restoreMethod = 'sessions';
-            // 使用 chrome.extension.inIncognitoContext 检测无痕模式
-            let isIncognito = chrome.extension.inIncognitoContext;
-            if (isIncognito && useOldMethodInIncognito) {
-                restoreMethod = 'old';
-            }
-
-            if (restoreMethod === 'sessions') {
-                chrome.sessions.restore(sessionId, function (restoredSession) {
-
-                    if (restoreToEnd && restoredSession?.tab?.id) {
-                        chrome.tabs.move(restoredSession.tab.id, { index: -1 }, function () {
-                            chrome.tabs.update(restoredSession.tab.id, { active: true });
-                        });
-                    }
-                    // 更新上下文菜单
-                    chrome.storage.local.get({ enableContextMenu: true }, function (data) {
-                        if (data.enableContextMenu) {
-                            createContextMenu();
-                        }
-                    });
-                });
-            } else if (restoreMethod === 'old') {
-                // 使用自定义方法恢复
-                // 注意：当右键菜单仍由 sessions 生成、但无痕模式下切换到 old 时，
-                // sessionId 是字母数字而非数字索引，parseInt 会得到 NaN。
-                // 此时 closedTabsList[NaN] 为 undefined，需做空值守卫，避免崩溃。
-                let index = parseInt(info.menuItemId.split('_')[1]);
-                let tabInfo = closedTabsList[index];
-                if (!tabInfo) {
-                    console.warn("无法从旧方法历史中找到对应的标签页，可能菜单与恢复方式不匹配。");
-                    return;
+            chrome.sessions.restore(sessionId, function (restoredSession) {
+                const message = takeLastErrorMessage();
+                if (message) {
+                    console.warn('恢复浏览器会话失败：' + message);
                 }
-                reopenClosedTab(tabInfo, index);
-            }
+
+                if (restoreToEnd && restoredSession?.tab?.id) {
+                    chrome.tabs.move(restoredSession.tab.id, { index: -1 }, function () {
+                        chrome.tabs.update(restoredSession.tab.id, { active: true });
+                    });
+                }
+                // 更新上下文菜单
+                chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+                    if (data.enableContextMenu) {
+                        createContextMenu();
+                    }
+                });
+            });
         });
     } else if (info.menuItemId.startsWith('closedTab_')) {
         let index = parseInt(info.menuItemId.split('_')[1]);
         let tabInfo = closedTabsList[index];
         reopenClosedTab(tabInfo, index);
     } else if (info.menuItemId.startsWith('sessionWindow_')) {
+        // sessionWindow_* 同样只会由 sessions 方式生成，且只出现在常规上下文
         let sessionId = info.menuItemId.substring('sessionWindow_'.length);
 
-        chrome.storage.local.get({ 'useOldMethodInIncognito': true }, function (result) {
-            let useOldMethodInIncognito = result.useOldMethodInIncognito;
+        if (!chrome.sessions || !chrome.sessions.restore) {
+            console.warn('当前上下文不支持 chrome.sessions，无法恢复该窗口。');
+            return;
+        }
 
-            let restoreMethod = 'sessions';
-            // 使用 chrome.extension.inIncognitoContext 检测无痕模式
-            let isIncognito = chrome.extension.inIncognitoContext;
-            if (isIncognito && useOldMethodInIncognito) {
-                restoreMethod = 'old';
+        chrome.sessions.restore(sessionId, function () {
+            const message = takeLastErrorMessage();
+            if (message) {
+                console.warn('恢复浏览器窗口失败：' + message);
             }
-            if (restoreMethod === 'sessions') {
-                chrome.sessions.restore(sessionId, function () {
-                    // 恢复窗口后更新上下文菜单
-                    chrome.storage.local.get({ enableContextMenu: true }, function (data) {
-                        if (data.enableContextMenu) {
-                            createContextMenu();
-                        }
-                    });
-                });
-            } else if (restoreMethod === 'old') {
-                // 无法恢复窗口，可能需要提示用户
-                console.log("无法在无痕模式下使用 'sessions' 恢复窗口");
-            }
+            // 恢复窗口后更新上下文菜单
+            chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+                if (data.enableContextMenu) {
+                    createContextMenu();
+                }
+            });
         });
     } else if (info.menuItemId === 'clearExtensionHistory') {
         console.log('Clearing extension history');
@@ -830,10 +989,15 @@ function compareTabsAndUpdateClosedList() {
     chrome.tabs.query({}, function (currentTabs) {
         // 创建一个当前打开标签页的 URL 集合
         let currentTabUrls = new Set(currentTabs.map(tab => tab.url));
+        // split 模式下 openTabsMap 存在共享的 chrome.storage.local 里，常规/无痕两个上下文
+        // 都会读写；这里只处理属于当前上下文的条目，避免把另一个上下文正在开着的标签页误判为已关闭
+        let isIncognito = isIncognitoContext();
 
         // 遍历存储的打开标签页，找出已关闭的标签页
         for (let tabId in openTabsMap) {
             let tabInfo = openTabsMap[tabId];
+            if (!tabInfo) continue;
+            if (!!tabInfo.incognito !== isIncognito) continue; // 属于另一个上下文，跳过
             if (!currentTabUrls.has(tabInfo.url)) {
                 // 标签页已关闭，添加到已关闭标签页列表中
                 // 记录关闭时间（毫秒时间戳），用于右键菜单显示相对关闭时间
@@ -845,13 +1009,20 @@ function compareTabsAndUpdateClosedList() {
         // 保存更新后的已关闭标签页列表
         saveClosedTabsData();
 
-        // 更新 openTabsMap 为当前打开的标签页
-        openTabsMap = {};
+        // 更新 openTabsMap 为当前上下文打开的标签页，同时保留另一个上下文的条目
+        let updatedOpenTabsMap = {};
+        for (let tabId in openTabsMap) {
+            let tabInfo = openTabsMap[tabId];
+            if (tabInfo && !!tabInfo.incognito !== isIncognito) {
+                updatedOpenTabsMap[tabId] = tabInfo;
+            }
+        }
         currentTabs.forEach(tab => {
             if (tab.url && tab.url !== 'chrome://newtab/' && tab.url !== 'about:blank') {
-                openTabsMap[tab.id] = { url: tab.url, title: tab.title };
+                updatedOpenTabsMap[tab.id] = { url: tab.url, title: tab.title, incognito: !!tab.incognito };
             }
         });
+        openTabsMap = updatedOpenTabsMap;
         saveOpenTabsData();
     });
 }
