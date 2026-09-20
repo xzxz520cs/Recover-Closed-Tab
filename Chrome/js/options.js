@@ -57,6 +57,9 @@ const advertising2 = document.getElementById('advertising-2');
 const advertisingContainer = document.getElementById('advertising-container');
 const clearHistoryOnInitCheckbox = document.getElementById('clearHistoryOnInit');
 const useOldMethodInIncognitoCheckbox = document.getElementById('useOldMethodInIncognito');
+const incognitoAccessStatus = document.getElementById('incognitoAccessStatus');
+const incognitoAccessHint = document.getElementById('incognitoAccessHint');
+const openIncognitoSettingsButton = document.getElementById('openIncognitoSettings');
 const shortcutsTabButton = document.getElementById('shortcuts-tab');
 const menuShowTimeCheckbox = document.getElementById('menuShowTime');
 const menuTimeTwoUnitsCheckbox = document.getElementById('menuTimeTwoUnits');
@@ -124,6 +127,13 @@ iconColorEnabledCheckbox.addEventListener('change', onIconColorEnabledChange);
 if (shortcutsTabButton) {
     shortcutsTabButton.addEventListener('click', function() {
         chrome.tabs.create({url: 'chrome://extensions/shortcuts'});
+    });
+}
+
+// 「去开启」按钮：打开扩展详情页（在「允许在无痕模式下使用」处开启）
+if (openIncognitoSettingsButton) {
+    openIncognitoSettingsButton.addEventListener('click', function () {
+        chrome.tabs.create({ url: 'chrome://extensions/?id=' + chrome.runtime.id });
     });
 }
 
@@ -904,9 +914,33 @@ function drawIconPreviewTinted(image, color) {
     ctx.putImageData(imageData, 0, 0);
 }
 
+// 检测并显示「无痕模式访问」状态（未开启时扩展收不到任何无痕标签事件，无法记录/恢复）
+function updateIncognitoAccessStatus() {
+    if (!chrome.extension || !chrome.extension.isAllowedIncognitoAccess) return;
+    chrome.extension.isAllowedIncognitoAccess(function (isAllowed) {
+        if (chrome.runtime.lastError) {
+            console.warn('检测无痕模式访问状态失败：' + chrome.runtime.lastError.message);
+            return;
+        }
+        if (incognitoAccessStatus) {
+            incognitoAccessStatus.textContent = chrome.i18n.getMessage(isAllowed ? 'incognito_access_enabled' : 'incognito_access_disabled');
+            incognitoAccessStatus.className = isAllowed ? 'me-2 text-success' : 'me-2 text-danger';
+        }
+        if (incognitoAccessHint) {
+            incognitoAccessHint.style.display = isAllowed ? 'none' : 'block';
+        }
+        if (openIncognitoSettingsButton) {
+            openIncognitoSettingsButton.style.display = isAllowed ? 'none' : '';
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     loadSettings();
     updateSaveButton();
+
+    // 显示无痕模式访问状态
+    updateIncognitoAccessStatus();
 
     // 初始化工具提示
     initializeTooltips();

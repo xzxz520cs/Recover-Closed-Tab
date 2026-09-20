@@ -187,6 +187,24 @@
     "useOldMethodInIncognito_tooltip": {
         "message": "Cuando está habilitado, al hacer clic en la extensión en modo incógnito, se utilizará automáticamente el historial registrado por la extensión para restaurar (ya que la función de restauración incorporada del navegador no está disponible en modo incógnito)."
     },
+    "incognito_access_label": {
+        "message": "Acceso en incógnito:"
+    },
+    "incognito_access_tooltip": {
+        "message": "La extensión necesita «Permitir en incógnito» para registrar y restaurar pestañas en ventanas de incógnito. Si está desactivado, no se registra nada."
+    },
+    "incognito_access_enabled": {
+        "message": "Activado"
+    },
+    "incognito_access_disabled": {
+        "message": "Desactivado"
+    },
+    "incognito_access_hint": {
+        "message": "Para registrar y restaurar pestañas de incógnito, pulsa el botón de la derecha, activa «Permitir en incógnito» en la página de detalles de la extensión y recarga esta página."
+    },
+    "incognito_access_open": {
+        "message": "Activar"
+    },
     "menu_seconds_ago": {
         "message": "Hace $count$ segundos",
         "placeholders": {

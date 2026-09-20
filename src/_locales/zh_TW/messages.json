@@ -187,6 +187,24 @@
     "useOldMethodInIncognito_tooltip": {
         "message": "啟用此選項後，當您在無痕模式下點擊擴展時，將自動使用擴展記錄的歷史記錄進行恢復（因為瀏覽器內置的恢復功能在無痕模式下不可用）。"
     },
+    "incognito_access_label": {
+        "message": "無痕模式訪問："
+    },
+    "incognito_access_tooltip": {
+        "message": "擴展需要「允許在無痕模式下使用」才能在無痕窗口中記錄和恢復標籤頁；未開啟時無痕窗口不會產生任何記錄。"
+    },
+    "incognito_access_enabled": {
+        "message": "已開啟"
+    },
+    "incognito_access_disabled": {
+        "message": "未開啟"
+    },
+    "incognito_access_hint": {
+        "message": "如需在無痕模式下記錄和恢復標籤頁，請點擊右側按鈕打開擴展詳情頁，開啟「允許在無痕模式下使用」，然後刷新本頁。"
+    },
+    "incognito_access_open": {
+        "message": "去開啟"
+    },
     "menu_seconds_ago": {
         "message": "$count$秒前",
         "placeholders": {

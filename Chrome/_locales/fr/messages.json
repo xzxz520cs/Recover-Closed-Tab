@@ -187,6 +187,24 @@
     "useOldMethodInIncognito_tooltip": {
         "message": "Lorsque cette option est activée, en cliquant sur l'extension en mode navigation privée, l'historique enregistré par l'extension sera automatiquement utilisé pour la restauration (puisque la fonction de restauration intégrée du navigateur n'est pas disponible en mode navigation privée)."
     },
+    "incognito_access_label": {
+        "message": "Accès en navigation privée :"
+    },
+    "incognito_access_tooltip": {
+        "message": "L’extension doit être « autorisée en navigation privée » pour enregistrer et restaurer les onglets des fenêtres privées. Sinon, rien n’est enregistré."
+    },
+    "incognito_access_enabled": {
+        "message": "Activé"
+    },
+    "incognito_access_disabled": {
+        "message": "Désactivé"
+    },
+    "incognito_access_hint": {
+        "message": "Pour enregistrer et restaurer les onglets privés, cliquez sur le bouton à droite, activez « Autoriser en navigation privée » sur la page de détails de l’extension, puis rechargez cette page."
+    },
+    "incognito_access_open": {
+        "message": "Activer"
+    },
     "menu_seconds_ago": {
         "message": "Il y a $count$ seconde(s)",
         "placeholders": {

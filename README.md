@@ -1,6 +1,6 @@
 # 恢复关闭的标签页 - Chrome扩展
 
-[![Version](https://img.shields.io/badge/version-3.65-blue)]()
+[![Version](https://img.shields.io/badge/version-3.66-blue)]()
 
 一个简单实用的Chrome扩展，帮助您快速找回意外关闭的标签页。
 

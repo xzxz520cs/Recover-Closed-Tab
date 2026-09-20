@@ -94,6 +94,15 @@
                             </div>
                         </div>
                     </div>
+                    <!-- 无痕模式访问状态（未开启时扩展收不到任何无痕标签事件，无法记录/恢复） -->
+                    <div class="mb-3" id="incognitoAccessGroup">
+                        <label class="form-label" data-i18n="incognito_access_label" data-bs-toggle="tooltip" data-bs-placement="top" data-i18n-tooltip="incognito_access_tooltip"></label>
+                        <div class="d-flex align-items-center">
+                            <span id="incognitoAccessStatus" class="me-2"></span>
+                            <button type="button" id="openIncognitoSettings" class="btn btn-sm btn-outline-dark" data-i18n="incognito_access_open"></button>
+                        </div>
+                        <div id="incognitoAccessHint" class="form-text" data-i18n="incognito_access_hint" style="display: none;"></div>
+                    </div>
                 </form>
             </div>
             <!-- 右键菜单设置选项卡 -->

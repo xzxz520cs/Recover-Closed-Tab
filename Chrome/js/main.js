@@ -1,17 +1,27 @@
 // 标记图标是否已初始化，防止重复初始化
 let iconInitialized = false;
 
-// 存储打开的标签页ID与其URL和标题的映射
+// 存储打开的标签页ID与其URL和标题的映射（仅本上下文：常规/无痕是两个独立实例）
 let openTabsMap = {};
 
-// 存储已关闭的标签页信息列表
+// 存储已关闭的标签页信息列表（常规/无痕共用一份，两侧窗口都能看到）
 let closedTabsList = [];
 
-// 已关闭标签页的存储键名
+// 已关闭标签页的存储键名（常规/无痕共用）
 const CLOSED_TABS_STORAGE_KEY = "closedTabs";
 
-// 打开标签页的存储键名
-const OPEN_TABS_STORAGE_KEY = "openTabs";
+// 旧版共用的打开标签页存储键名（新版本按上下文分键，此键仅用于一次性迁移）
+const LEGACY_OPEN_TABS_STORAGE_KEY = "openTabs";
+
+// 打开标签页存储键名：按上下文分开，两个实例各写各的，避免互相覆盖
+function getOpenTabsStorageKey() {
+    return isIncognitoContext() ? 'openTabs_incognito' : 'openTabs_regular';
+}
+
+// 存储布局迁移标志键（按上下文分开记录）
+function getStorageLayoutFlagKey() {
+    return isIncognitoContext() ? 'storageLayoutV2_incognito' : 'storageLayoutV2_regular';
+}
 
 // 版本存储键名
 const EXTENSION_VERSION_KEY = "extensionVersion";
@@ -40,6 +50,112 @@ function getMenuIdsStorageKey() {
 function takeLastErrorMessage() {
     const error = chrome.runtime.lastError;
     return error && error.message ? error.message : '';
+}
+
+// ---- 存储写入统一走「读-改-写」事务 ----
+// 常规/无痕是两个独立实例但共用同一份 chrome.storage.local：如果各自拿着内存里的整表
+// 直接覆写，就会互相冲掉记录（无痕窗口关闭后记录丢失的根因之一）。因此所有写入都改为：
+// 先读取最新数据 → 只修改自己的那部分 → 写回；同一实例内的事务串行排队执行。
+let storageQueue = Promise.resolve();
+
+function runStorageTransaction(mutator) {
+    const task = function () {
+        return new Promise(function (resolve) {
+            const openTabsKey = getOpenTabsStorageKey();
+            const defaults = { maxClosedTabs: 1000 };
+            defaults[CLOSED_TABS_STORAGE_KEY] = [];
+            defaults[openTabsKey] = {};
+
+            chrome.storage.local.get(defaults, function (data) {
+                const readError = takeLastErrorMessage();
+                if (readError) {
+                    console.warn('读取标签页数据失败：' + readError);
+                }
+                const closedList = Array.isArray(data[CLOSED_TABS_STORAGE_KEY]) ? data[CLOSED_TABS_STORAGE_KEY] : [];
+                const openMap = (data[openTabsKey] && typeof data[openTabsKey] === 'object') ? data[openTabsKey] : {};
+
+                let result = null;
+                try {
+                    result = mutator(closedList, openMap, data.maxClosedTabs);
+                } catch (e) {
+                    console.warn('处理标签页数据失败：' + (e && e.message ? e.message : e));
+                    result = null;
+                }
+
+                const update = {};
+                if (result && result.closedList) update[CLOSED_TABS_STORAGE_KEY] = result.closedList;
+                if (result && result.openMap) update[openTabsKey] = result.openMap;
+
+                function finish(finalClosedList, finalOpenMap) {
+                    closedTabsList = finalClosedList;
+                    openTabsMap = finalOpenMap;
+                    resolve({ closedList: finalClosedList, openMap: finalOpenMap });
+                }
+
+                if (Object.keys(update).length === 0) {
+                    finish(closedList, openMap);
+                    return;
+                }
+
+                chrome.storage.local.set(update, function () {
+                    const writeError = takeLastErrorMessage();
+                    if (writeError) {
+                        console.warn('保存标签页数据失败：' + writeError);
+                        finish(closedList, openMap);
+                        return;
+                    }
+                    finish(update[CLOSED_TABS_STORAGE_KEY] || closedList, update[openTabsKey] || openMap);
+                });
+            });
+        });
+    };
+    return queueStorageTask(task);
+}
+
+// 把一个存储任务挂到串行队列（事务与迁移共用同一条队列，避免并发读改写互相覆盖）
+function queueStorageTask(task) {
+    const next = storageQueue.then(task, task);
+    storageQueue = next.catch(function () { });
+    return next;
+}
+
+// 按最大记录数量裁剪已关闭列表（0 表示不记录/清空）
+function truncateClosedList(list, maxClosedTabs) {
+    const max = (typeof maxClosedTabs === 'number' && !isNaN(maxClosedTabs)) ? maxClosedTabs : 1000;
+    if (max === 0) {
+        list.length = 0;
+        return;
+    }
+    if (list.length > max) {
+        list.splice(0, list.length - max);
+    }
+}
+
+// 生成已关闭标签页条目的稳定 id（用于右键菜单项 id、恢复与移除定位）
+function createClosedTabEntryId() {
+    return 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+// 清空扩展记录（常规/无痕共用一份列表，两个窗口会一起清空）
+function clearClosedTabs() {
+    runStorageTransaction(function () {
+        return { closedList: [] };
+    });
+}
+
+// 从记录中移除指定条目（按稳定 id 匹配，老数据退化为 url + 关闭时间）
+function removeClosedTabEntry(entry) {
+    if (!entry) return;
+    runStorageTransaction(function (closedList) {
+        const index = closedList.findIndex(function (item) {
+            if (!item) return false;
+            if (entry.id && item.id) return item.id === entry.id;
+            return item.url === entry.url && item.closedAt === entry.closedAt;
+        });
+        if (index < 0) return null;
+        closedList.splice(index, 1);
+        return { closedList: closedList };
+    });
 }
 
 // 清除本上下文创建的菜单项（不使用 removeAll，原因见上）
@@ -161,6 +277,109 @@ const defaultSettings = {
     menuTimeTwoUnits: false
 };
 
+// ---- 状态加载（每个 SW 生命周期只加载一次）----
+let stateLoadPromise = null;
+
+// 加载本实例状态：迁移旧存储布局 → 补齐条目 id → 载入关闭列表与打开标签映射
+function ensureStateLoaded() {
+    if (!stateLoadPromise) {
+        // 迁移也走存储队列：与事件处理事务串行，避免迁移覆盖并发写入
+        stateLoadPromise = queueStorageTask(migrateOpenTabsStorage)
+            .catch(function (e) {
+                console.warn('迁移打开标签页存储失败：' + (e && e.message ? e.message : e));
+            })
+            .then(function () {
+                return runStorageTransaction(function (closedList) {
+                    // 旧数据没有 id：一次性补齐（菜单项 id / 恢复 / 移除定位都依赖稳定 id）
+                    let changed = false;
+                    closedList.forEach(function (entry) {
+                        if (entry && !entry.id) {
+                            entry.id = createClosedTabEntryId();
+                            changed = true;
+                        }
+                    });
+                    if (!changed) return null;
+                    return { closedList: closedList };
+                });
+            });
+    }
+    return stateLoadPromise;
+}
+
+// 一次性迁移：把旧版共用的 openTabs 拆分为按上下文分开的两个键
+// （旧键只在两边都迁移完成、或其中确实没有无痕条目时由常规侧删除，避免丢迁移）
+function migrateOpenTabsStorage() {
+    return new Promise(function (resolve) {
+        const flagKey = getStorageLayoutFlagKey();
+        const openTabsKey = getOpenTabsStorageKey();
+        const query = {};
+        query[flagKey] = false;
+        query[LEGACY_OPEN_TABS_STORAGE_KEY] = null;
+        query[openTabsKey] = null;
+        query['storageLayoutV2_incognito'] = false;
+
+        chrome.storage.local.get(query, function (data) {
+            const message = takeLastErrorMessage();
+            if (message) {
+                console.warn('读取存储布局版本失败：' + message);
+                resolve();
+                return;
+            }
+            if (data[flagKey]) {
+                resolve();
+                return;
+            }
+
+            const isIncognito = isIncognitoContext();
+            const ownEntries = (data[openTabsKey] && typeof data[openTabsKey] === 'object') ? data[openTabsKey] : {};
+            const legacy = data[LEGACY_OPEN_TABS_STORAGE_KEY];
+            let legacyHasIncognitoEntries = false;
+
+            if (legacy && typeof legacy === 'object') {
+                for (const tabId in legacy) {
+                    const info = legacy[tabId];
+                    if (!info) continue;
+                    if (info.incognito) legacyHasIncognitoEntries = true;
+                    if (!!info.incognito !== isIncognito) continue; // 属于另一个上下文，跳过
+                    if (!ownEntries[tabId]) ownEntries[tabId] = info;
+                }
+            }
+
+            const update = {};
+            update[openTabsKey] = ownEntries;
+            update[flagKey] = true;
+
+            chrome.storage.local.set(update, function () {
+                const setMessage = takeLastErrorMessage();
+                if (setMessage) {
+                    console.warn('迁移打开标签页存储失败：' + setMessage);
+                    resolve();
+                    return;
+                }
+                // 常规侧：旧键里没有无痕条目（或另一半也已完成迁移）时，才能安全删除旧键
+                if (!isIncognito && (!legacyHasIncognitoEntries || data['storageLayoutV2_incognito'])) {
+                    chrome.storage.local.remove(LEGACY_OPEN_TABS_STORAGE_KEY, function () {
+                        takeLastErrorMessage();
+                        resolve();
+                    });
+                } else {
+                    resolve();
+                }
+            });
+        });
+    });
+}
+
+// 延迟执行一次补录比对（SW 启动约 7 秒后），把异常情况下丢失的关闭记录补回来
+let compareScheduled = false;
+function scheduleCompare() {
+    if (compareScheduled) return;
+    compareScheduled = true;
+    setTimeout(function () {
+        compareTabsAndUpdateClosedList();
+    }, 7000);
+}
+
 // 初始化函数
 function initialize() {
     if (iconInitialized) return; // 防止重复初始化
@@ -203,24 +422,16 @@ function initialize() {
         }
     });
 
-    // 获取已保存的已关闭标签页列表
-    chrome.storage.local.get(CLOSED_TABS_STORAGE_KEY, function (data) {
-        closedTabsList = data[CLOSED_TABS_STORAGE_KEY] || [];
-    });
+    // 加载本实例需要的全部状态（关闭列表 / 本上下文打开标签映射，并一次性迁移旧数据）
+    ensureStateLoaded();
 
-    // 获取已保存的打开标签页映射
-    chrome.storage.local.get(OPEN_TABS_STORAGE_KEY, function (data) {
-        openTabsMap = data[OPEN_TABS_STORAGE_KEY] || {};
-    });
-
-    // 在初始化时比较存储的打开标签页和当前打开的标签页，用于将浏览器关闭时关闭的标签页在浏览器打开时放入已关闭标签页列表中
-    compareTabsAndUpdateClosedList();
+    // 延迟执行补录比对：等浏览器启动 / 会话恢复稳定后再跑，避免把「正在恢复」的标签页误判为已关闭
+    scheduleCompare();
 
     // 检查是否需要在初始化时清空历史记录
     chrome.storage.local.get(['clearHistoryOnInit', 'restoreMethod'], function (data) {
         if (data.clearHistoryOnInit && data.restoreMethod === 'old') {
-            closedTabsList = []; // 清空已关闭标签页列表
-            saveClosedTabsData(); // 保存更新后的已关闭标签页数据
+            clearClosedTabs(); // 清空已关闭标签页列表
         }
     });
 }
@@ -302,6 +513,18 @@ chrome.tabs.onUpdated.addListener(initialize);
 // 监听存储变化，更新上下文菜单
 chrome.storage.onChanged.addListener(function (changes, areaName) {
     if (areaName === 'local') {
+        // 已关闭标签页记录发生变化（含另一个实例写入）：同步内存缓存并刷新菜单
+        if (CLOSED_TABS_STORAGE_KEY in changes) {
+            const newValue = changes[CLOSED_TABS_STORAGE_KEY].newValue;
+            closedTabsList = Array.isArray(newValue) ? newValue : [];
+            chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+                takeLastErrorMessage();
+                if (data.enableContextMenu) {
+                    createContextMenu();
+                }
+            });
+        }
+
         if ('enableContextMenu' in changes) {
             // 当enableContextMenu变化时，更新标题和上下文菜单
             chrome.storage.local.get({ enableContextMenu: true }, function (data) {
@@ -326,11 +549,11 @@ chrome.storage.onChanged.addListener(function (changes, areaName) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.action === 'clearClosedTabsList') {
-        closedTabsList = [];
-        saveClosedTabsData();
+        clearClosedTabs();
 
-        // 更新上下文菜单
+        // 更新上下文菜单（另一个实例通过 storage.onChanged 同步）
         chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+            takeLastErrorMessage();
             if (data.enableContextMenu) {
                 createContextMenu();
             }
@@ -339,17 +562,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         sendResponse({ result: 'success' });
     }
 });
-
-// 获取最大已关闭标签页的存储数量
-function getMaxClosedTabsCount(callback) {
-    chrome.storage.local.get({ maxClosedTabs: 1000 }, function (data) {
-        let count = data.maxClosedTabs;
-        if (typeof count !== 'number' || isNaN(count)) {
-            count = 1000;
-        }
-        callback(count);
-    });
-}
 
 // 当点击扩展程序图标时，恢复最近关闭的标签页或窗口
 chrome.action.onClicked.addListener(function (tab) {
@@ -398,29 +610,12 @@ chrome.action.onClicked.addListener(function (tab) {
                     }
                 });
             } else if (restoreMethod === 'old') {
-                // 使用自定义方法恢复
-                let lastClosedTab = closedTabsList.pop();
-                if (!lastClosedTab) return;
-
-                let lastClosedTabUrl = lastClosedTab.url;
-
-                if (lastClosedTabUrl.startsWith('file://')) {
-                    // 打开无法直接访问的本地文件页面
-                    chrome.tabs.create({
-                        url: chrome.runtime.getURL('unreachable.html') + '?fileUrl=' + encodeURIComponent(lastClosedTabUrl)
-                    });
-                } else {
-                    // 创建新标签页
-                    chrome.tabs.create({ url: lastClosedTabUrl }, function (newTab) {
-                        if (restoreToEnd) {
-                            chrome.tabs.move(newTab.id, { index: -1 }, function () {
-                                chrome.tabs.update(newTab.id, { active: true });
-                            });
-                        }
-                    });
-                }
-
-                saveClosedTabsData(); // 保存更新后的已关闭标签页数据
+                // 使用自定义方法恢复：等状态加载完成后取最新一条（含无痕恢复路由）
+                ensureStateLoaded().then(function () {
+                    const lastClosedTab = closedTabsList.length ? closedTabsList[closedTabsList.length - 1] : null;
+                    if (!lastClosedTab) return;
+                    restoreClosedTabEntry(lastClosedTab);
+                });
             }
         });
     });
@@ -439,110 +634,133 @@ chrome.commands.onCommand.addListener(function (command) {
     }
 });
 
+// 记录/更新打开标签页（写回时采取「读取最新 → 只改自己这一条 → 写回」，两个实例互不覆盖）
+function rememberOpenTab(tab) {
+    if (!tab || typeof tab.id !== 'number') return;
+    if (!tab.url || tab.url === 'chrome://newtab/' || tab.url === 'about:blank') return;
+
+    runStorageTransaction(function (closedList, openMap) {
+        const existing = openMap[tab.id];
+        if (existing && existing.url === tab.url && existing.title === tab.title) {
+            return null; // 无变化，不写
+        }
+        openMap[tab.id] = { url: tab.url, title: tab.title };
+        return { openMap: openMap };
+    });
+}
+
 // 监听标签页创建事件
 chrome.tabs.onCreated.addListener(function (tab) {
-    if (tab.url && tab.url !== 'chrome://newtab/' && tab.url !== 'about:blank') {
-        // 记录 incognito 标记：两个扩展实例共用一份 openTabsMap，需要区分归属
-        openTabsMap[tab.id] = { url: tab.url, title: tab.title, incognito: !!tab.incognito };
-        saveOpenTabsData();
-    }
+    rememberOpenTab(tab);
 });
 
 // 监听标签页更新事件
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    if (tab.url && tab.url !== 'chrome://newtab/' && tab.url !== 'about:blank') {
-        openTabsMap[tabId] = { url: tab.url, title: tab.title, incognito: !!tab.incognito };
-        saveOpenTabsData();
-    }
+    rememberOpenTab(tab);
 });
 
-// 重新打开已关闭的标签页（对应菜单项 id 为 closedTab_*，数据来自扩展自己记录的历史）
-function reopenClosedTab(tabInfo, index) {
-    if (!tabInfo) return;
+// 恢复一条已关闭标签页记录
+// 说明：记录来自扩展自己的历史，直接打开对应 URL 即可，不再受 restoreMethod 影响。
+// 按条目来源路由：无痕模式关闭的记录如果在常规窗口里恢复，必须新开无痕窗口打开
+// （否则 URL 会落到常规标签/常规历史里）；其余情况在当前上下文中打开。
+function restoreClosedTabEntry(entry) {
+    if (!entry || !entry.url) return;
 
     chrome.storage.local.get({ 'restoreToEnd': true }, function (result) {
-        let restoreToEnd = result.restoreToEnd;
+        const restoreToEnd = result.restoreToEnd;
+        const openInIncognitoWindow = !!entry.incognito && !isIncognitoContext();
 
-        // 说明：tabInfo 来自扩展自己记录的历史，直接打开对应 URL 即可，不再受
-        // restoreMethod 影响（无痕上下文的菜单也只可能来自这份历史）。
-        if (tabInfo.url.startsWith('file://')) {
-            chrome.tabs.create({
-                url: chrome.runtime.getURL('unreachable.html') + '?fileUrl=' + encodeURIComponent(tabInfo.url)
-            });
-        } else {
-            chrome.tabs.create({ url: tabInfo.url }, function (newTab) {
-                if (restoreToEnd) {
-                    chrome.tabs.move(newTab.id, { index: -1 }, function () {
-                        chrome.tabs.update(newTab.id, { active: true });
-                    });
+        function finishRestore() {
+            // 只在成功打开后才从记录中移除（读-改-写）
+            removeClosedTabEntry(entry);
+            // 更新上下文菜单
+            chrome.storage.local.get({ enableContextMenu: true }, function (data) {
+                takeLastErrorMessage();
+                if (data.enableContextMenu) {
+                    createContextMenu();
                 }
             });
         }
 
-        // 从列表中移除已打开的标签页（索引失效时按对象查找兑底）
-        let removeIndex = (typeof index === 'number' && closedTabsList[index] === tabInfo) ?
-            index : closedTabsList.indexOf(tabInfo);
-        if (removeIndex >= 0) {
-            closedTabsList.splice(removeIndex, 1);
+        if (entry.url.startsWith('file://')) {
+            // 打开无法直接访问的本地文件页面
+            chrome.tabs.create({
+                url: chrome.runtime.getURL('unreachable.html') + '?fileUrl=' + encodeURIComponent(entry.url)
+            }, function () {
+                const message = takeLastErrorMessage();
+                if (message) {
+                    console.warn('恢复标签页失败：' + message);
+                    return;
+                }
+                finishRestore();
+            });
+        } else if (openInIncognitoWindow) {
+            // 常规窗口恢复无痕记录：新开一个无痕窗口（需要扩展已允许在无痕模式下使用）
+            chrome.windows.create({ incognito: true, url: entry.url, focused: true }, function (newWindow) {
+                const message = takeLastErrorMessage();
+                if (message || !newWindow) {
+                    console.warn('无法在无痕窗口中恢复该标签页（请在扩展详情中允许使用无痕模式）：' + (message || '未知错误'));
+                    return;
+                }
+                finishRestore();
+            });
+        } else {
+            chrome.tabs.create({ url: entry.url }, function (newTab) {
+                const message = takeLastErrorMessage();
+                if (message || !newTab) {
+                    console.warn('恢复标签页失败：' + (message || '未知错误'));
+                    return;
+                }
+                if (restoreToEnd && typeof newTab.id === 'number') {
+                    chrome.tabs.move(newTab.id, { index: -1 }, function () {
+                        takeLastErrorMessage();
+                        chrome.tabs.update(newTab.id, { active: true });
+                    });
+                }
+                finishRestore();
+            });
         }
-        saveClosedTabsData();
-
-        // 更新上下文菜单
-        chrome.storage.local.get({ enableContextMenu: true }, function (data) {
-            if (data.enableContextMenu) {
-                createContextMenu();
-            }
-        });
     });
 }
 
 // 记录标签页关闭事件
+// 采用「读-改-写」事务：只删除本标签并追加一条记录，绝不整表覆写。
+// 事务内的 get 自带最新的 closedTabs 与 openTabs，不依赖内存缓存是否已加载（
+// 无痕窗口关闭时 SW 可能刚被唤醒，这条路径要尽可能抢在 profile 被拆除前写入）。
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-    const closedTabInfo = openTabsMap[tabId];
-    if (closedTabInfo && closedTabInfo.url && closedTabInfo.url !== 'chrome://newtab/' && closedTabInfo.url !== 'about:blank' && !closedTabInfo.url.includes('unreachable.html')) {
-        // 记录关闭时间（毫秒时间戳），用于右键菜单显示相对关闭时间
-        closedTabInfo.closedAt = Date.now();
-        closedTabsList.push(closedTabInfo);
-    }
-    delete openTabsMap[tabId];
+    const isIncognito = isIncognitoContext();
+    runStorageTransaction(function (closedList, openMap, maxClosedTabs) {
+        const closedTabInfo = openMap[tabId];
+        let openChanged = false;
+        if (closedTabInfo) {
+            delete openMap[tabId];
+            openChanged = true;
+        }
 
-    saveClosedTabsData();
-    saveOpenTabsData();
+        let closedChanged = false;
+        if (closedTabInfo && closedTabInfo.url && closedTabInfo.url !== 'chrome://newtab/' && closedTabInfo.url !== 'about:blank' && !closedTabInfo.url.includes('unreachable.html')) {
+            closedList.push({
+                id: createClosedTabEntryId(),
+                url: closedTabInfo.url,
+                title: closedTabInfo.title,
+                // 记录来源上下文：常规窗口恢复无痕记录时会新开无痕窗口
+                incognito: isIncognito,
+                // 记录关闭时间（毫秒时间戳），用于右键菜单显示相对关闭时间
+                closedAt: Date.now(),
+                // 备用信息：窗口关闭批次（为将来「窗口（N 个标签页）」条目预留）
+                windowId: removeInfo && typeof removeInfo.windowId === 'number' ? removeInfo.windowId : undefined,
+                closedWithWindow: !!(removeInfo && removeInfo.isWindowClosing)
+            });
+            truncateClosedList(closedList, maxClosedTabs);
+            closedChanged = true;
+        }
+
+        return {
+            closedList: closedChanged ? closedList : null,
+            openMap: openChanged ? openMap : null
+        };
+    });
 });
-
-// 保存已关闭的标签页数据到本地存储
-function saveClosedTabsData() {
-    getMaxClosedTabsCount(function (MAX_CLOSED_TABS_COUNT) {
-        if (MAX_CLOSED_TABS_COUNT !== 0) {
-            if (closedTabsList.length > MAX_CLOSED_TABS_COUNT) {
-                closedTabsList.splice(0, closedTabsList.length - MAX_CLOSED_TABS_COUNT);
-            }
-        } else {
-            closedTabsList = []; // 清空列表
-        }
-        chrome.storage.local.set({ [CLOSED_TABS_STORAGE_KEY]: closedTabsList }, function () {
-            if (chrome.runtime.lastError) {
-                console.error("保存已关闭标签页数据时出错：" + chrome.runtime.lastError.message);
-            } else {
-                // 更新上下文菜单
-                chrome.storage.local.get({ enableContextMenu: true }, function (data) {
-                    if (data.enableContextMenu) {
-                        createContextMenu();
-                    }
-                });
-            }
-        });
-    });
-}
-
-// 保存打开的标签页数据到本地存储
-function saveOpenTabsData() {
-    chrome.storage.local.set({ [OPEN_TABS_STORAGE_KEY]: openTabsMap }, function () {
-        if (chrome.runtime.lastError) {
-            console.error("保存打开标签页数据时出错：" + chrome.runtime.lastError.message);
-        }
-    });
-}
 
 // 截断网页名到最大长度（超长时追加省略号）
 function truncateTitle(title, maxLength) {
@@ -755,6 +973,14 @@ function createContextMenu() {
 
 // 构建菜单项；done(createdIds) 在全部菜单项创建请求发出后调用
 function buildContextMenu(done) {
+    // 菜单内容依赖已关闭列表，先等状态加载完成（否则列表可能还是空的）
+    ensureStateLoaded().then(function () {
+        buildContextMenuItems(done);
+    });
+}
+
+// 真正构建菜单项（内部函数，见 buildContextMenu）
+function buildContextMenuItems(done) {
     chrome.storage.local.get({
         'restoreMethod': 'sessions',
         'maxListItems': 25,
@@ -797,7 +1023,8 @@ function buildContextMenu(done) {
                 let tabInfo = closedTabsList[i];
                 if (!tabInfo) continue;
                 items.push({
-                    id: 'closedTab_' + i,
+                    // 优先使用稳定 id（老数据没有 id 时退化为下标，点击时两种都能解析）
+                    id: 'closedTab_' + (tabInfo.id || i),
                     title: tabInfo.title || tabInfo.url, // 如果没有标题，使用URL
                     timeMs: tabInfo.closedAt,
                     isSeconds: false
@@ -949,9 +1176,18 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
             });
         });
     } else if (info.menuItemId.startsWith('closedTab_')) {
-        let index = parseInt(info.menuItemId.split('_')[1]);
-        let tabInfo = closedTabsList[index];
-        reopenClosedTab(tabInfo, index);
+        // 条目 key 是稳定 id；兼容扩展更新前遗留的旧菜单项（旧 id 里存的是下标）
+        const entryKey = info.menuItemId.substring('closedTab_'.length);
+        ensureStateLoaded().then(function () {
+            let tabInfo = closedTabsList.find(function (item) {
+                return item && item.id === entryKey;
+            });
+            if (!tabInfo && /^\d+$/.test(entryKey)) {
+                tabInfo = closedTabsList[parseInt(entryKey, 10)];
+            }
+            if (!tabInfo) return;
+            restoreClosedTabEntry(tabInfo);
+        });
     } else if (info.menuItemId.startsWith('sessionWindow_')) {
         // sessionWindow_* 同样只会由 sessions 方式生成，且只出现在常规上下文
         let sessionId = info.menuItemId.substring('sessionWindow_'.length);
@@ -976,54 +1212,82 @@ chrome.contextMenus.onClicked.addListener(function (info, tab) {
     } else if (info.menuItemId === 'clearExtensionHistory') {
         console.log('Clearing extension history');
         // 清除扩展中的已关闭标签页历史记录
-        closedTabsList = [];
-        saveClosedTabsData();
+        clearClosedTabs();
 
         // 更新上下文菜单
         createContextMenu();
     }
 });
 
-// 在初始化时比较存储的打开标签页和当前打开的标签页
+// 补录比对（安全网）：把「浏览器关闭/扩展没来得及记录」时丢失的关闭记录补回来
+// 判定「还开着」的顺序：① 标签 id 仍在（同一浏览器会话内，网址变化也不会误判）
+// → ② 网址仍存在于某个标签（浏览器重启后会话恢复的情况，含正在加载的 pendingUrl）。
+// 两者都不满足才按已关闭补录，避免把还没关闭的标签页误记成已关闭。
 function compareTabsAndUpdateClosedList() {
-    chrome.tabs.query({}, function (currentTabs) {
-        // 创建一个当前打开标签页的 URL 集合
-        let currentTabUrls = new Set(currentTabs.map(tab => tab.url));
-        // split 模式下 openTabsMap 存在共享的 chrome.storage.local 里，常规/无痕两个上下文
-        // 都会读写；这里只处理属于当前上下文的条目，避免把另一个上下文正在开着的标签页误判为已关闭
-        let isIncognito = isIncognitoContext();
-
-        // 遍历存储的打开标签页，找出已关闭的标签页
-        for (let tabId in openTabsMap) {
-            let tabInfo = openTabsMap[tabId];
-            if (!tabInfo) continue;
-            if (!!tabInfo.incognito !== isIncognito) continue; // 属于另一个上下文，跳过
-            if (!currentTabUrls.has(tabInfo.url)) {
-                // 标签页已关闭，添加到已关闭标签页列表中
-                // 记录关闭时间（毫秒时间戳），用于右键菜单显示相对关闭时间
-                tabInfo.closedAt = Date.now();
-                closedTabsList.push(tabInfo);
+    return ensureStateLoaded().then(function () {
+        chrome.tabs.query({}, function (currentTabs) {
+            const message = takeLastErrorMessage();
+            if (message || !Array.isArray(currentTabs)) {
+                console.warn('查询当前标签页失败，跳过补录比对：' + (message || '返回数据异常'));
+                return;
             }
-        }
 
-        // 保存更新后的已关闭标签页列表
-        saveClosedTabsData();
+            const liveTabIds = new Set();
+            const liveUrls = new Set();
+            currentTabs.forEach(function (tab) {
+                if (!tab) return;
+                if (typeof tab.id === 'number') {
+                    liveTabIds.add(tab.id);
+                }
+                if (tab.url) {
+                    liveUrls.add(tab.url);
+                }
+                if (tab.pendingUrl) {
+                    liveUrls.add(tab.pendingUrl);
+                }
+            });
 
-        // 更新 openTabsMap 为当前上下文打开的标签页，同时保留另一个上下文的条目
-        let updatedOpenTabsMap = {};
-        for (let tabId in openTabsMap) {
-            let tabInfo = openTabsMap[tabId];
-            if (tabInfo && !!tabInfo.incognito !== isIncognito) {
-                updatedOpenTabsMap[tabId] = tabInfo;
-            }
-        }
-        currentTabs.forEach(tab => {
-            if (tab.url && tab.url !== 'chrome://newtab/' && tab.url !== 'about:blank') {
-                updatedOpenTabsMap[tab.id] = { url: tab.url, title: tab.title, incognito: !!tab.incognito };
-            }
+            runStorageTransaction(function (closedList, openMap, maxClosedTabs) {
+                const now = Date.now();
+                let closedChanged = false;
+
+                for (const tabId in openMap) {
+                    const tabInfo = openMap[tabId];
+                    if (!tabInfo) continue;
+                    const tabIdNumber = parseInt(tabId, 10);
+                    const stillOpenById = !isNaN(tabIdNumber) && liveTabIds.has(tabIdNumber);
+                    const stillOpenByUrl = !!tabInfo.url && liveUrls.has(tabInfo.url);
+                    if (!stillOpenById && !stillOpenByUrl) {
+                        // 确实不见了：补录为已关闭（关闭时间只能用“发现时间”）
+                        closedList.push({
+                            id: createClosedTabEntryId(),
+                            url: tabInfo.url,
+                            title: tabInfo.title,
+                            incognito: isIncognitoContext(),
+                            closedAt: now
+                        });
+                        closedChanged = true;
+                    }
+                }
+                if (closedChanged) {
+                    truncateClosedList(closedList, maxClosedTabs);
+                }
+
+                // 重建本上下文的打开标签映射（浏览器重启后旧的标签 id 会被替换为当前 id，
+                // 避免老条目在标签后来真正关闭时产生重复记录）
+                const updatedOpenTabsMap = {};
+                currentTabs.forEach(function (tab) {
+                    if (tab && typeof tab.id === 'number' && tab.url && tab.url !== 'chrome://newtab/' && tab.url !== 'about:blank') {
+                        updatedOpenTabsMap[tab.id] = { url: tab.url, title: tab.title };
+                    }
+                });
+
+                return {
+                    closedList: closedChanged ? closedList : null,
+                    openMap: updatedOpenTabsMap
+                };
+            });
         });
-        openTabsMap = updatedOpenTabsMap;
-        saveOpenTabsData();
     });
 }
 

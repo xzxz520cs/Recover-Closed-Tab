@@ -187,6 +187,24 @@
     "useOldMethodInIncognito_tooltip": {
         "message": "When enabled, clicking the extension in Incognito mode will automatically use the extension's recorded history to restore (since the browser's built-in restore function is unavailable in Incognito mode)."
     },
+    "incognito_access_label": {
+        "message": "Incognito access:"
+    },
+    "incognito_access_tooltip": {
+        "message": "The extension needs “Allow in incognito” to record and restore tabs in incognito windows. When it is off, nothing from incognito windows is recorded."
+    },
+    "incognito_access_enabled": {
+        "message": "Enabled"
+    },
+    "incognito_access_disabled": {
+        "message": "Disabled"
+    },
+    "incognito_access_hint": {
+        "message": "To record and restore incognito tabs, click the button on the right, turn on “Allow in incognito” on the extension details page, then reload this page."
+    },
+    "incognito_access_open": {
+        "message": "Enable"
+    },
     "menu_seconds_ago": {
         "message": "$count$ seconds ago",
         "placeholders": {

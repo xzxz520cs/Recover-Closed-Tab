@@ -187,6 +187,24 @@
     "useOldMethodInIncognito_tooltip": {
         "message": "このオプションを有効にすると、シークレットモードで拡張機能をクリックしたときに、自動的に拡張機能が記録した履歴を使用して復元します（ブラウザの内蔵復元機能はシークレットモードでは利用できないため）。"
     },
+    "incognito_access_label": {
+        "message": "シークレットモードでのアクセス："
+    },
+    "incognito_access_tooltip": {
+        "message": "シークレットウィンドウのタブを記録・復元するには「シークレット モードでの使用を許可」が必要です。オフの場合、何も記録されません。"
+    },
+    "incognito_access_enabled": {
+        "message": "有効"
+    },
+    "incognito_access_disabled": {
+        "message": "無効"
+    },
+    "incognito_access_hint": {
+        "message": "シークレットタブを記録・復元するには、右のボタンで拡張機能の詳細ページを開き、「シークレット モードでの使用を許可」をオンにしてから、このページを再読み込みしてください。"
+    },
+    "incognito_access_open": {
+        "message": "有効にする"
+    },
     "menu_seconds_ago": {
         "message": "$count$秒前",
         "placeholders": {
