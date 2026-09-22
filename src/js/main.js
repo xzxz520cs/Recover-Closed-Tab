@@ -370,14 +370,23 @@ function migrateOpenTabsStorage() {
     });
 }
 
-// 延迟执行一次补录比对（SW 启动约 7 秒后），把异常情况下丢失的关闭记录补回来
+// 补录比对（安全网）的调度：
+// - 常规上下文：浏览器启动后要等会话恢复稳定（7 秒），避免把「正在恢复」的标签页误判为已关闭；
+// - 无痕上下文：无痕标签本来就不会被浏览器恢复，无需等待，1.5 秒即可，
+//   这样打开新的无痕窗口后很快就能看到上次窗口关闭时补录的记录。
 let compareScheduled = false;
+let compareStarted = false;
+
+function startCompare() {
+    if (compareStarted) return;
+    compareStarted = true;
+    compareTabsAndUpdateClosedList();
+}
+
 function scheduleCompare() {
     if (compareScheduled) return;
     compareScheduled = true;
-    setTimeout(function () {
-        compareTabsAndUpdateClosedList();
-    }, 7000);
+    setTimeout(startCompare, isIncognitoContext() ? 1500 : 7000);
 }
 
 // 初始化函数
@@ -981,6 +990,12 @@ function buildContextMenu(done) {
 
 // 真正构建菜单项（内部函数，见 buildContextMenu）
 function buildContextMenuItems(done) {
+    // 无痕上下文：点开菜单时顺带触发一次补录比对（等 1.5 秒的定时器仍可能慢于用户右键）
+    // 补录结果写入后会触发 storage.onChanged → 自动重建菜单
+    if (isIncognitoContext()) {
+        startCompare();
+    }
+
     chrome.storage.local.get({
         'restoreMethod': 'sessions',
         'maxListItems': 25,
